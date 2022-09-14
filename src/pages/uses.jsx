@@ -92,7 +92,7 @@ export default function Uses() {
               day. If something remains on the checklist, it gets transferred to
               the new one. If I’ve been avoiding a task for multiple days, it
               probably isn’t important so I drop or delegate it.
-              <span className="mt-2 block bg-gray-50 p-2">
+              <span className="mt-4 block bg-gray-50 p-2 dark:bg-zinc-700">
                 <span className="block italic">
                   ″There is nothing so useless as doing efficiently that which
                   should not be done at all.″
