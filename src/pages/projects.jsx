@@ -49,7 +49,7 @@ export default function Projects() {
                 <Image
                   src={project.logo}
                   alt=""
-                  className="h-full w-full"
+                  className="h-full w-full rounded-full"
                   unoptimized
                 />
               </div>
