@@ -22,7 +22,6 @@ import logoApplicant from '@/images/logos/applicant.jpeg'
 import logoExtendas from '@/images/logos/extendas.jpeg'
 import logoUnit4 from '@/images/logos/unit4.jpeg'
 
-
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
 import { formatDate } from '@/lib/formatDate'
@@ -258,11 +257,12 @@ export default function Home({ articles }) {
     <>
       <Head>
         <title>
-          Falko Woudstra - Developer, entrepreneur, and amateur shuffleboard enthusias
+          Falko Woudstra - Developer, entrepreneur, and amateur shuffleboard
+          enthusias
         </title>
         <meta
           name="description"
-          content="I’m Spencer, a software designer and entrepreneur based in New York City. I’m the founder and CEO of Planetaria, where we develop technologies that empower regular people to explore space on their own terms."
+          content="I’m Falko, a software developer and entrepreneur based in Enschede, The Netherlands. I’m the founder and CTO of Coddin B.V, where we develop reactive product configurators and large webplatforms."
         />
       </Head>
       <Container className="mt-9">
@@ -271,9 +271,18 @@ export default function Home({ articles }) {
             Developer, entrepreneur, and amateur shuffleboard enthusiast
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Falko, a software developer and entrepreneur based in Enschede, The Netherlands.
-            I’m the founder and CTO of <a href="https://coddin.nl" className="text-zinc-500 hover:text-zinc-800 hover:underline" target="_blank" rel="noreferrer">Coddin B.V.</a>, where we develop
-            reactive product configurators and large webplatforms.
+            I’m Falko, a software developer and entrepreneur based in Enschede,
+            The Netherlands. I’m the founder and CTO of{' '}
+            <a
+              href="https://coddin.nl"
+              className="text-zinc-500 hover:text-zinc-800 hover:underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Coddin B.V.
+            </a>
+            , where we develop reactive product configurators and large
+            webplatforms.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink

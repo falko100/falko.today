@@ -45,7 +45,7 @@ export default function About() {
         <title>About - Falko Woudstra</title>
         <meta
           name="description"
-          content="I’m Spencer Sharp. I live in New York City, where I design the future."
+          content="I’m Falko, a software developer and entrepreneur based in Enschede, The Netherlands."
         />
       </Head>
       <Container className="mt-16 sm:mt-32">
@@ -68,7 +68,7 @@ export default function About() {
             <div className="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
               <p>
                 I destroyed my first computer at the age of 10. Don’t put a red
-                button at the back of a classroom computer! I loved computers
+                button at the back of a classroom computer! I’ve loved computers
                 and videogames since I can remember.
               </p>
               <p>

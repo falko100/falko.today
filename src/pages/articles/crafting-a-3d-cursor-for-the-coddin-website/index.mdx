@@ -1,6 +1,7 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/future/image'
-import designSystem from './planetaria-design-system.png'
+import cursorPreview from './cursor.png'
+import simpleCube from './simple-cube.png'
 
 export const meta = {
   author: 'Falko Woudstra',
@@ -12,75 +13,79 @@ export const meta = {
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
-Most companies try to stay ahead of the curve when it comes to visual design, but for Planetaria we needed to create a brand that would still inspire us 100 years from now when humanity has spread across our entire solar system.
+While working on the new design of our corporate website, I was missing that *WOW!* effect.
+So I got the idea for a 3d cube that acts as a cursor. While working on it, someone suggested to make it more like a tessaract or hypercube.
+Here is the result. I’m gonna explain how I did it below.
 
-<Image src={designSystem} alt="" />
+<Image src={cursorPreview} alt=""/>
 
-I knew that to get it right I was going to have to replicate the viewing conditions of someone from the future, so I grabbed my space helmet from the closet, created a new Figma document, and got to work.
+I started by creating an element with the 6 sides as child elements.
+To make sure the elements are transformed correctly when rotating the parent element. I set the `transform-style` of the parent to `preserve-3d`.
+Then I set a size on all the elements, then rotated and moved them into the shape of a cube. I set the `perspective` property to 6 times to cube’s size.
+While working on it, I set a background for each of the sides and rotated the cube a bit to make sure the faces where correctly orientated.
 
-## Sermone fata
+```scss
+.cube {
+  transform-style: preserve-3d;
+  position: relative;
+  font-size: 200px;
+  perspective: 6em;
+  transform: rotate3d(1, 1, 1, 45deg);
 
-Lorem markdownum, bracchia in redibam! Terque unda puppi nec, linguae posterior
-in utraque respicere candidus Mimasque formae; quae conantem cervice. Parcite
-variatus, redolentia adeunt. Tyrioque dies, naufraga sua adit partibus celanda
-torquere temptata, erit maneat et ramos, [iam](#) ait dominari
-potitus! Tibi litora matremque fumantia condi radicibus opusque.
+  &, .side {
+    width: 1em;
+    height: 1em;
+  }
 
-Deus feram verumque, fecit, ira tamen, terras per alienae victum. Mutantur
-levitate quas ubi arcum ripas oculos abest. Adest [commissaque
-victae](#) in gemitus nectareis ire diva
-dotibus ora, et findi huic invenit; fatis? Fractaque dare superinposita
-nimiumque simulatoremque sanguine, at voce aestibus diu! Quid veterum hausit tu
-nil utinam paternos ima, commentaque.
+  .side {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 1px solid red;
 
-```c
-exbibyte_wins = gigahertz(3);
-grayscaleUtilityClient = control_uat;
-pcmciaHibernate = oop_virus_console(text_mountain);
-if (stateWaisFirewire >= -2) {
-    jfs = 647065 / ldapVrml(tutorialRestore, 85);
-    metal_runtime_parse = roomComputingResolution - toolbarUpload +
-            ipx_nvram_open;
-} else {
-    maximizeSidebar *= suffix_url(flatbed + 2, requirements_encoding_node +
-            only_qbe_media, minicomputer);
+    &.front { transform: translateZ(.5em); }
+    &.back { transform: translateZ(-.5em) rotateY(180deg); }
+    &.left { transform: rotateY(-90deg) translateZ(.5em); }
+    &.right { transform: rotateY(90deg) translateZ(.5em); }
+    &.top { transform: rotateX(90deg) translateZ(.5em); }
+    &.bottom { transform: rotateX(-90deg) translateZ(.5em); }
+  }
 }
 ```
 
-Aere repetiti cognataque natus. Habebat vela solutis saepe munus nondum adhuc
-oscula nomina pignora corpus deserat.
+I ended up with a cube that looks like this;
 
-## Lethaei Pindumve me quae dinumerat Pavor
+<Image className="border" src={simpleCube} alt=""/>
 
-Idem se saxa fata pollentibus geminos; quos pedibus. Est urnis Herses omnes nec
-divite: et ille illa furit sim verbis Cyllenius.
+I gave the sides a little styling and added a "light" to the center.
 
-1. Captus inpleverunt collo
-2. Nec nam placebant
-3. Siquos vulgus
-4. Dictis carissime fugae
-5. A tacitos nulla viginti
+```scss
+.cursor {
+  position: relative;
+  font-size: 40px;
+  width: 1em;
+  height: 1em;
 
-Ungues fistula annoso, ille addit linoque motatque uberior verso
-[rubuerunt](#) confine desuetaque. _Sanguine_ anteit
-emerguntque expugnacior est pennas iniqui ecce **haeret** genus: peiora imagine
-fossas Cephisos formosa! Refugitque amata [refelli](#)
-supplex. Summa brevis vetuere tenebas, hostes vetantis, suppressit, arreptum
-regna. Postquam conpescit iuvenis habet corpus, et erratica, perdere, tot mota
-ars talis.
+  &:after {
+    content: "";
+    background: #fff;
+    box-shadow: 0 0 10px white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+  }
 
-```c
-digital.webcam_dual_frequency = webmasterMms;
-if (5 + language_standalone_google) {
-    cc_inbox_layout *= file_character;
-    task += p;
-    lockUnicode += enterprise_monochrome(tokenFunctionPersonal, keyVirtual,
-            adf);
+  .cube {
+    .side {
+      background-color: transparentize(yellow, 0.5);
+      border: 1px solid yellow;
+    }
+  }
 }
-windows_binary_esports(87734, array(restoreRomTopology, adRaw(407314),
-        dongleBashThumbnail), interpreter);
 ```
 
-Sit volat naturam; motu Cancri. Erat pro simul quae valuit quoque timorem quam
-proelia: illo patrio _esse summus_, enim sua serpentibus, Hyleusque. Est coniuge
-recuso; refert Coroniden ignotos manat, adfectu.
+
