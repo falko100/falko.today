@@ -12,6 +12,7 @@ import {
   GitHubIcon,
   LinkedInIcon,
 } from '@/components/SocialIcons'
+import avatarImage from '@/images/legendary-head.png'
 import image1 from '@/images/photos/foto-2.jpeg'
 import image2 from '@/images/photos/foto-1.jpeg'
 import image3 from '@/images/photos/foto-3.jpeg'
@@ -25,6 +26,7 @@ import logoUnit4 from '@/images/logos/unit4.jpeg'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllArticles } from '@/lib/getAllArticles'
 import { formatDate } from '@/lib/formatDate'
+import { Avatar } from '@/components/Header';
 
 function MailIcon(props) {
   return (
@@ -266,45 +268,56 @@ export default function Home({ articles }) {
         />
       </Head>
       <Container className="mt-9">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Developer, entrepreneur, and amateur shuffleboard enthusiast
-          </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Falko, a software developer and entrepreneur based in Enschede,
-            The Netherlands. I’m the founder and CTO of{' '}
-            <a
-              href="https://coddin.nl"
-              className="text-zinc-500 hover:text-zinc-800 hover:underline"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Coddin B.V.
-            </a>
-            , where we develop reactive product configurators and large
-            webplatforms.
-          </p>
-          <div className="mt-6 flex gap-6">
-            <SocialLink
-              href="https://twitter.com/falko100"
-              aria-label="Follow on Twitter"
-              icon={TwitterIcon}
+        <div className="grid" style={{gridTemplateColumns: '1fr auto'}}>
+          <div className="w-full max-w-4xl">
+            <Image
+              src={avatarImage}
+              alt=""
+              sizes='20rem'
+              className={clsx(
+                'hidden md:block max-w-full w-48 ml-6 mb-6 rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 float-right',
+              )}
+              priority
             />
-            <SocialLink
-              href="https://instagram.com/falko100"
-              aria-label="Follow on Instagram"
-              icon={InstagramIcon}
-            />
-            <SocialLink
-              href="https://github.com/falko100"
-              aria-label="Follow on GitHub"
-              icon={GitHubIcon}
-            />
-            <SocialLink
-              href="https://www.linkedin.com/in/falkowoudstra"
-              aria-label="Follow on LinkedIn"
-              icon={LinkedInIcon}
-            />
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+              Developer, entrepreneur, and amateur shuffleboard enthusiast
+            </h1>
+            <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+              I’m Falko, a software developer and entrepreneur based in Enschede,
+              The Netherlands. I’m the founder and CTO of{' '}
+              <a
+                href="https://coddin.nl"
+                className="text-zinc-500 hover:text-zinc-800 hover:underline"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Coddin B.V.
+              </a>
+              , where we develop reactive product configurators and large
+              webplatforms.
+            </p>
+            <div className="mt-6 flex gap-6">
+              <SocialLink
+                href="https://twitter.com/falko100"
+                aria-label="Follow on Twitter"
+                icon={TwitterIcon}
+              />
+              <SocialLink
+                href="https://instagram.com/falko100"
+                aria-label="Follow on Instagram"
+                icon={InstagramIcon}
+              />
+              <SocialLink
+                href="https://github.com/falko100"
+                aria-label="Follow on GitHub"
+                icon={GitHubIcon}
+              />
+              <SocialLink
+                href="https://www.linkedin.com/in/falkowoudstra"
+                aria-label="Follow on LinkedIn"
+                icon={LinkedInIcon}
+              />
+            </div>
           </div>
         </div>
       </Container>
