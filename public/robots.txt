@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://falko.today
+
+# Sitemaps
+Sitemap: https://falko.today/sitemap.xml
