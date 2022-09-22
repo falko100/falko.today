@@ -35,6 +35,11 @@ export function ArticleLayout({
       <Head>
         <title>{`${meta.title} - Falko Woudstra`}</title>
         <meta name="description" content={meta.description} />
+        <meta property="og:title" content={meta.og?.title || meta.title} />
+        <meta property="og:description" content={meta.og?.description || meta.description} />
+        <meta property="og:locale" content="en" />
+        {meta.og?.image && (<meta property="og:image" content={meta.og?.image} />)}
+        {meta.og?.type && (<meta property="og:type" content={meta.og?.type} />)}
       </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">

@@ -1,5 +1,6 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
-import finneganDungeonMaster from './finnegan-dungeonmaster.jpg'; import Image from 'next/future/image';
+import finneganDungeonMaster from './finnegan-dungeonmaster.jpg';
+import Image from 'next/future/image';
 
 export const meta = {
   author: 'Falko Woudstra',
@@ -7,7 +8,13 @@ export const meta = {
   title: 'How my wife and D&D saved me from a burn-out',
   description:
     'Working 60 hours a week and becoming a father at the same time was a recipe for disaster. But my wife and D&D saved me from a burn-out.',
+  og: {
+    image: process.env.NEXT_PUBLIC_SITE_URL + finneganDungeonMaster.src,
+    type: 'article',
+  },
 }
+
+console.log(finneganDungeonMaster);
 
 export default (props) => <ArticleLayout meta={meta} {...props} />
 
