@@ -18,7 +18,19 @@ function SpeakingSection({
   );
 }
 
-function Appearance({ title, description, event, cta, href }) {
+function Appearance({
+  title,
+  description,
+  event,
+  cta,
+  href,
+}: {
+  title: string;
+  description: string;
+  event: string;
+  cta: string;
+  href: string;
+}) {
   return (
     <Card as="article">
       <Card.Title as="h3" href={href}>

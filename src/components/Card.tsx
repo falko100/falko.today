@@ -61,7 +61,7 @@ Card.Title = function CardTitle({
   children,
 }: {
   as?: any;
-  href: string;
+  href?: string;
   children: React.ReactNode;
 }) {
   return (

@@ -1,11 +1,11 @@
-import Image from 'next/future/image'
-import Head from 'next/head'
+import Image from 'next/future/image';
+import Head from 'next/head';
 
-import { Card } from '@/components/Card'
-import { SimpleLayout } from '@/components/SimpleLayout'
-import coddinSite from '@/images/projects/coddin-site.png'
-import elektramat from '@/images/projects/elektramat.png'
-import tommie from '@/images/projects/tommie.png'
+import { Card } from '@/components/Card';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import coddinSite from '@/images/projects/coddin-site.png';
+import elektramat from '@/images/projects/elektramat.png';
+import tommie from '@/images/projects/tommie.png';
 
 const projects = [
   {
@@ -37,9 +37,9 @@ const projects = [
     },
     logo: tommie,
   },
-]
+];
 
-function LinkIcon(props) {
+function LinkIcon(props: { [key: string]: any }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
       <path
@@ -47,7 +47,7 @@ function LinkIcon(props) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export default function Projects() {
@@ -96,5 +96,5 @@ export default function Projects() {
         </ul>
       </SimpleLayout>
     </>
-  )
+  );
 }
