@@ -1,34 +1,35 @@
-import Image from 'next/future/image'
-import Head from 'next/head'
-import Link from 'next/link'
-import clsx from 'clsx'
+import Image from 'next/future/image';
+import Head from 'next/head';
+import Link from 'next/link';
+import clsx from 'clsx';
 
-import { Button } from '@/components/Button'
-import { Card } from '@/components/Card'
-import { Container } from '@/components/Container'
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { Container } from '@/components/Container';
 import {
   TwitterIcon,
   InstagramIcon,
   GitHubIcon,
   LinkedInIcon,
-} from '@/components/SocialIcons'
-import avatarImage from '@/images/legendary-head.png'
-import image1 from '@/images/photos/foto-2.jpeg'
-import image2 from '@/images/photos/foto-1.jpeg'
-import image3 from '@/images/photos/foto-3.jpeg'
-import image4 from '@/images/photos/foto-5.jpeg'
-import image5 from '@/images/photos/foto-4.jpeg'
-import logoCoddin from '@/images/logos/coddin.jpeg'
-import logoApplicant from '@/images/logos/applicant.jpeg'
-import logoExtendas from '@/images/logos/extendas.jpeg'
-import logoUnit4 from '@/images/logos/unit4.jpeg'
+} from '@/components/SocialIcons';
+import avatarImage from '@/images/legendary-head.png';
+import image1 from '@/images/photos/foto-2.jpeg';
+import image2 from '@/images/photos/foto-1.jpeg';
+import image3 from '@/images/photos/foto-3.jpeg';
+import image4 from '@/images/photos/foto-5.jpeg';
+import image5 from '@/images/photos/foto-4.jpeg';
+import logoCoddin from '@/images/logos/coddin.jpeg';
+import logoApplicant from '@/images/logos/applicant.jpeg';
+import logoExtendas from '@/images/logos/extendas.jpeg';
+import logoUnit4 from '@/images/logos/unit4.jpeg';
 
-import { generateRssFeed } from '@/lib/generateRssFeed'
-import { getAllArticles } from '@/lib/getAllArticles'
-import { formatDate } from '@/lib/formatDate'
-import { Avatar } from '@/components/Header';
+import { generateRssFeed } from '@/lib/generateRssFeed';
+import { getAllArticles } from '@/lib/getAllArticles';
+import { formatDate } from '@/lib/formatDate';
 
-function MailIcon(props) {
+import { Article as ArticleType } from '@/lib/getAllArticles';
+
+function MailIcon(props: { [a: string]: any }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -48,10 +49,10 @@ function MailIcon(props) {
         className="stroke-zinc-400 dark:stroke-zinc-500"
       />
     </svg>
-  )
+  );
 }
 
-function BriefcaseIcon(props) {
+function BriefcaseIcon(props: { [a: string]: any }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -71,10 +72,10 @@ function BriefcaseIcon(props) {
         className="stroke-zinc-400 dark:stroke-zinc-500"
       />
     </svg>
-  )
+  );
 }
 
-function ArrowDownIcon(props) {
+function ArrowDownIcon(props: { [a: string]: any }) {
   return (
     <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
       <path
@@ -84,10 +85,10 @@ function ArrowDownIcon(props) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
-function Article({ article }) {
+function Article({ article }: { article: ArticleType }) {
   return (
     <Card as="article">
       <Card.Title href={`/articles/${article.slug}`}>
@@ -99,15 +100,21 @@ function Article({ article }) {
       <Card.Description>{article.description}</Card.Description>
       <Card.Cta>Read article</Card.Cta>
     </Card>
-  )
+  );
 }
 
-function SocialLink({ icon: Icon, ...props }) {
+function SocialLink({
+  icon: Icon,
+  ...props
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+}) {
   return (
     <Link className="group -m-1 p-1" {...props}>
       <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
     </Link>
-  )
+  );
 }
 
 function Newsletter() {
@@ -141,7 +148,7 @@ function Newsletter() {
         </Button>
       </div>
     </form>
-  )
+  );
 }
 
 function Resume() {
@@ -151,10 +158,7 @@ function Resume() {
       title: 'Founder / CTO',
       logo: logoCoddin,
       start: '2017',
-      end: {
-        label: 'Present',
-        dateTime: new Date().getFullYear(),
-      },
+      end: 'Present',
     },
     {
       company: 'Applicant',
@@ -177,7 +181,7 @@ function Resume() {
       start: '2008',
       end: '2011',
     },
-  ]
+  ];
 
   return (
     <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
@@ -203,17 +207,11 @@ function Resume() {
               <dt className="sr-only">Date</dt>
               <dd
                 className="ml-auto text-xs text-zinc-400 dark:text-zinc-500"
-                aria-label={`${role.start.label ?? role.start} until ${
-                  role.end.label ?? role.end
-                }`}
+                aria-label={`${role.start} until ${role.end}`}
               >
-                <time dateTime={role.start.dateTime ?? role.start}>
-                  {role.start.label ?? role.start}
-                </time>{' '}
+                <time dateTime={role.start}>{role.start}</time>{' '}
                 <span aria-hidden="true">—</span>{' '}
-                <time dateTime={role.end.dateTime ?? role.end}>
-                  {role.end.label ?? role.end}
-                </time>
+                <time dateTime={role.end}>{role.end}</time>
               </dd>
             </dl>
           </li>
@@ -224,11 +222,17 @@ function Resume() {
         <ArrowDownIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
       </Button>
     </div>
-  )
+  );
 }
 
 function Photos() {
-  let rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+  let rotations = [
+    'rotate-2',
+    '-rotate-2',
+    'rotate-2',
+    'rotate-2',
+    '-rotate-2',
+  ];
 
   return (
     <div className="mt-16 sm:mt-20">
@@ -251,10 +255,10 @@ function Photos() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default function Home({ articles }) {
+export default function Home({ articles }: { articles: ArticleType[] }) {
   return (
     <>
       <Head>
@@ -268,14 +272,14 @@ export default function Home({ articles }) {
         />
       </Head>
       <Container className="mt-9">
-        <div className="grid" style={{gridTemplateColumns: '1fr auto'}}>
+        <div className="grid" style={{ gridTemplateColumns: '1fr auto' }}>
           <div className="w-full max-w-4xl">
             <Image
               src={avatarImage}
               alt=""
-              sizes='20rem'
+              sizes="20rem"
               className={clsx(
-                'hidden md:block max-w-full w-48 ml-6 mb-6 rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 float-right',
+                'float-right ml-6 mb-6 hidden w-48 max-w-full rounded-full bg-zinc-100 object-cover dark:bg-zinc-800 md:block'
               )}
               priority
             />
@@ -283,8 +287,8 @@ export default function Home({ articles }) {
               Developer, entrepreneur, and amateur shuffleboard enthusiast
             </h1>
             <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-              I’m Falko, a software developer and entrepreneur based in Enschede,
-              The Netherlands. I’m the founder and CTO of{' '}
+              I’m Falko, a software developer and entrepreneur based in
+              Enschede, The Netherlands. I’m the founder and CTO of{' '}
               <a
                 href="https://coddin.nl"
                 className="text-zinc-500 hover:text-zinc-800 hover:underline"
@@ -336,12 +340,12 @@ export default function Home({ articles }) {
         </div>
       </Container>
     </>
-  )
+  );
 }
 
 export async function getStaticProps() {
   if (process.env.NODE_ENV === 'production') {
-    await generateRssFeed()
+    await generateRssFeed();
   }
 
   return {
@@ -350,5 +354,5 @@ export async function getStaticProps() {
         .slice(0, 4)
         .map(({ component, ...meta }) => meta),
     },
-  }
+  };
 }

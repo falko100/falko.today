@@ -1,15 +1,21 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
-import { Card } from '@/components/Card'
-import { Section } from '@/components/Section'
-import { SimpleLayout } from '@/components/SimpleLayout'
+import { Card } from '@/components/Card';
+import { Section } from '@/components/Section';
+import { SimpleLayout } from '@/components/SimpleLayout';
 
-function SpeakingSection({ children, ...props }) {
+function SpeakingSection({
+  children,
+  ...props
+}: {
+  children: any;
+  title: string;
+}) {
   return (
     <Section {...props}>
       <div className="space-y-16">{children}</div>
     </Section>
-  )
+  );
 }
 
 function Appearance({ title, description, event, cta, href }) {
@@ -22,7 +28,7 @@ function Appearance({ title, description, event, cta, href }) {
       <Card.Description>{description}</Card.Description>
       <Card.Cta>{cta}</Card.Cta>
     </Card>
-  )
+  );
 }
 
 export default function Speaking() {
@@ -82,5 +88,5 @@ export default function Speaking() {
         </div>
       </SimpleLayout>
     </>
-  )
+  );
 }

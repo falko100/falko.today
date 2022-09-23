@@ -1,11 +1,11 @@
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
-import { Container } from '@/components/Container'
-import { formatDate } from '@/lib/formatDate'
-import { Prose } from '@/components/Prose'
+import { Container } from '@/components/Container';
+import { formatDate } from '@/lib/formatDate';
+import { Prose } from '@/components/Prose';
 
-function ArrowLeftIcon(props) {
+function ArrowLeftIcon(props: { [key: string]: any }) {
   return (
     <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
       <path
@@ -15,7 +15,7 @@ function ArrowLeftIcon(props) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 export function ArticleLayout({
@@ -23,11 +23,16 @@ export function ArticleLayout({
   meta,
   isRssFeed = false,
   previousPathname,
+}: {
+  children: any;
+  meta: any;
+  isRssFeed?: boolean;
+  previousPathname?: string;
 }) {
-  let router = useRouter()
+  let router = useRouter();
 
   if (isRssFeed) {
-    return children
+    return children;
   }
 
   return (
@@ -36,10 +41,15 @@ export function ArticleLayout({
         <title>{`${meta.title} - Falko Woudstra`}</title>
         <meta name="description" content={meta.description} />
         <meta property="og:title" content={meta.og?.title || meta.title} />
-        <meta property="og:description" content={meta.og?.description || meta.description} />
+        <meta
+          property="og:description"
+          content={meta.og?.description || meta.description}
+        />
         <meta property="og:locale" content="en" />
-        {meta.og?.image && (<meta property="og:image" content={meta.og?.image} />)}
-        {meta.og?.type && (<meta property="og:type" content={meta.og?.type} />)}
+        {meta.og?.image && (
+          <meta property="og:image" content={meta.og?.image} />
+        )}
+        {meta.og?.type && <meta property="og:type" content={meta.og?.type} />}
       </Head>
       <Container className="mt-16 lg:mt-32">
         <div className="xl:relative">
@@ -73,5 +83,5 @@ export function ArticleLayout({
         </div>
       </Container>
     </>
-  )
+  );
 }

@@ -1,18 +1,28 @@
-import Image from 'next/future/image'
-import Head from 'next/head'
-import Link from 'next/link'
-import clsx from 'clsx'
+import Image from 'next/future/image';
+import Head from 'next/head';
+import Link from 'next/link';
+import clsx from 'clsx';
 
-import { Container } from '@/components/Container'
+import { Container } from '@/components/Container';
 import {
   TwitterIcon,
   InstagramIcon,
   GitHubIcon,
   LinkedInIcon,
-} from '@/components/SocialIcons'
-import portraitImage from '@/images/profile-falko.jpeg'
+} from '@/components/SocialIcons';
+import portraitImage from '@/images/profile-falko.jpeg';
 
-function SocialLink({ className, href, children, icon: Icon }) {
+function SocialLink({
+  className,
+  href,
+  children,
+  icon: Icon,
+}: {
+  className?: string;
+  href: string;
+  children: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
+}) {
   return (
     <li className={clsx(className, 'flex')}>
       <Link
@@ -24,7 +34,7 @@ function SocialLink({ className, href, children, icon: Icon }) {
         <span className="ml-4">{children}</span>
       </Link>
     </li>
-  )
+  );
 }
 
 function MailIcon(props) {
@@ -35,7 +45,7 @@ function MailIcon(props) {
         d="M6 5a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H6Zm.245 2.187a.75.75 0 0 0-.99 1.126l6.25 5.5a.75.75 0 0 0 .99 0l6.25-5.5a.75.75 0 0 0-.99-1.126L12 12.251 6.245 7.187Z"
       />
     </svg>
-  )
+  );
 }
 
 export default function About() {
@@ -125,5 +135,5 @@ export default function About() {
         </div>
       </Container>
     </>
-  )
+  );
 }

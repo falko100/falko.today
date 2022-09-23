@@ -1,11 +1,13 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
-import { Card } from '@/components/Card'
-import { SimpleLayout } from '@/components/SimpleLayout'
-import { getAllArticles } from '@/lib/getAllArticles'
-import { formatDate } from '@/lib/formatDate'
+import { Card } from '@/components/Card';
+import { SimpleLayout } from '@/components/SimpleLayout';
+import { getAllArticles } from '@/lib/getAllArticles';
+import { formatDate } from '@/lib/formatDate';
 
-function Article({ article }) {
+import { Article as ArticleType } from '@/lib/getAllArticles';
+
+function Article({ article }: { article: ArticleType }) {
   return (
     <article className="md:grid md:grid-cols-4 md:items-baseline">
       <Card className="md:col-span-3">
@@ -31,10 +33,14 @@ function Article({ article }) {
         {formatDate(article.date)}
       </Card.Eyebrow>
     </article>
-  )
+  );
 }
 
-export default function ArticlesIndex({ articles }) {
+export default function ArticlesIndex({
+  articles,
+}: {
+  articles: ArticleType[];
+}) {
   return (
     <>
       <Head>
@@ -57,7 +63,7 @@ export default function ArticlesIndex({ articles }) {
         </div>
       </SimpleLayout>
     </>
-  )
+  );
 }
 
 export async function getStaticProps() {
@@ -65,5 +71,5 @@ export async function getStaticProps() {
     props: {
       articles: (await getAllArticles()).map(({ component, ...meta }) => meta),
     },
-  }
+  };
 }

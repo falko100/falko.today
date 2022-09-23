@@ -1,8 +1,14 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { Container } from '@/components/Container'
+import { Container } from '@/components/Container';
 
-function NavLink({ href, children }) {
+function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
@@ -10,7 +16,7 @@ function NavLink({ href, children }) {
     >
       {children}
     </Link>
-  )
+  );
 }
 
 export function Footer() {
@@ -34,5 +40,5 @@ export function Footer() {
         </div>
       </Container.Outer>
     </footer>
-  )
+  );
 }
