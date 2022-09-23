@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import { browserSessionPersistence } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD_8fhOChwShIHng3EeuedZfrqcdYWufwg',
@@ -13,6 +14,8 @@ const firebaseConfig = {
 };
 
 const firebaseClient = initializeApp(firebaseConfig);
-const firebaseAnalytics = getAnalytics(firebaseClient);
+const firebaseAuth = getAuth(firebaseClient);
+firebaseAuth.languageCode = 'en';
+firebaseAuth.setPersistence(browserSessionPersistence);
 
-export { firebaseClient, firebaseAnalytics };
+export { firebaseClient, firebaseAuth };

@@ -7,6 +7,9 @@ import clsx from 'clsx';
 import { Container } from '@/components/Container';
 import avatarImage from '@/images/legendary-head.png';
 import { Fragment, useEffect, useRef } from 'react';
+import { login, logout } from '@/context/AuthProvider';
+
+import { useAuth } from '@/context/AuthProvider';
 
 function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -32,6 +35,26 @@ function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function UserIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      className="h-6 w-6"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
       />
     </svg>
   );
@@ -71,14 +94,26 @@ function MoonIcon(props: React.SVGProps<SVGSVGElement>) {
 
 function MobileNavItem({
   href,
+  onClick,
   children,
 }: {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: React.ReactNode;
 }) {
+  const props: { href?: string; onClick?: () => void } = {};
+  if (href) {
+    props['href'] = href;
+  } else if (onClick) {
+    props['onClick'] = onClick;
+  }
   return (
     <li>
-      <Popover.Button as={Link} href={href} className="block py-2">
+      <Popover.Button
+        as={href ? Link : 'button'}
+        {...props}
+        className="block py-2"
+      >
         {children}
       </Popover.Button>
     </li>
@@ -86,6 +121,7 @@ function MobileNavItem({
 }
 
 function MobileNavigation(props: { [x: string]: unknown }) {
+  const { user } = useAuth();
   return (
     <Popover {...props}>
       <Popover.Button className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20">
@@ -180,6 +216,51 @@ function DesktopNavigation(props: { [x: string]: unknown }) {
       </ul>
     </nav>
   );
+}
+
+function AuthButton() {
+  const { user } = useAuth();
+
+  if (user === null) {
+    return (
+      <button
+        type="button"
+        aria-label="Login"
+        className="group mr-3 h-10 rounded-full bg-white/90 px-3 py-2 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur transition dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+        onClick={login}
+      >
+        <UserIcon className="relative -top-[.5px] h-5 w-6 stroke-zinc-500 transition group-hover:stroke-zinc-700 [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-teal-600" />
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => {
+        confirm('Are you sure you want to logout?') ? logout() : false;
+      }}
+      className="group mr-3 h-10 rounded-full bg-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur transition dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+    >
+      {user.photoURL && (
+        <img
+          className="block h-10 w-10 rounded-full object-cover object-center"
+          src={user.photoURL}
+          alt={user.displayName || ''}
+          referrerPolicy="no-referrer"
+        />
+      )}
+      {!user.photoURL && (
+        <span className="flex h-10 w-10 items-center justify-center rounded-full">
+          {getFirstLettersFromFirstAndLastWord(user.displayName || '?')}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function getFirstLettersFromFirstAndLastWord(name: string) {
+  const words = name.split(' ');
+  return words[0][0].toUpperCase() + words[words.length - 1][0].toUpperCase();
 }
 
 function ModeToggle() {
@@ -445,10 +526,9 @@ export function Header() {
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
-              <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
-                  <ModeToggle />
-                </div>
+              <div className="pointer-events-auto flex justify-end md:flex-1">
+                <AuthButton />
+                <ModeToggle />
               </div>
             </div>
           </Container>
