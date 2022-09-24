@@ -64,8 +64,8 @@ export default function Cocktail({
           content="These are some of the projects I am proud of."
         />
       </Head>
-      <Container className="mt-16 sm:mt-32">
-        <div className="mt-8 lg:grid lg:grid-cols-2 lg:gap-12">
+      <Container className="mt-8 sm:mt-32">
+        <div className="m-2 lg:mt-8 lg:grid lg:grid-cols-2 lg:gap-12">
           <div className="relative lg:col-start-2 lg:row-start-1">
             <div className="relative mx-auto max-w-prose text-base lg:max-w-none">
               <figure>
