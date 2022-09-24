@@ -25,9 +25,9 @@ function CocktailCard(cocktail: ShortDrink) {
           alt=""
         />
       </div>
-      <div className="flex flex-1 flex-col justify-between bg-white px-6 py-4">
+      <div className="flex flex-1 flex-col justify-between bg-white p-2 lg:px-6 lg:py-4">
         <div className="flex-1">
-          <p className="text-sm font-medium text-indigo-600">
+          <p className="text-[12px] font-medium text-indigo-600 lg:text-sm">
             <a
               href={'/cocktails/category/' + slugify(cocktail.name)}
               className="hover:underline"
@@ -39,10 +39,10 @@ function CocktailCard(cocktail: ShortDrink) {
             href={'/cocktails/' + slugify(cocktail.name)}
             className="mt-1 block"
           >
-            <p className="text-xl font-semibold text-gray-900">
+            <p className="text-sm font-semibold text-gray-900 lg:text-xl">
               {cocktail.name}
             </p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 hidden text-sm text-gray-500 lg:block">
               {cocktail.ingredients
                 .map((ingredient) => ingredient.name)
                 .join(', ')}
@@ -92,7 +92,7 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
           </button>
         ))}
       </nav>
-      <div className="mx-auto mt-12 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+      <div className="-mx-2 mt-12 grid max-w-lg grid-cols-3 gap-2 lg:mx-auto lg:max-w-none lg:gap-5">
         {filteredCocktails.map((cocktail) => CocktailCard(cocktail))}
       </div>
     </SimpleLayout>
