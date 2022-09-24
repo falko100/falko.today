@@ -308,9 +308,9 @@ export default function Home({
             </p>
             <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
               Fun fact; I am using Incremental Static Regeneration to generate
-              this website. Its a new feature in Next.js 10.2.0. Its a hybrid of
-              static and server-side rendering. Its a great way to get the best
-              of both worlds. The last time the page was regenerated was on{' '}
+              this website. Its a somewhat new feature in Next.js. Its a hybrid
+              of static and server-side rendering. Its a great way to get the
+              best of both worlds. The last time the page was regenerated was on{' '}
               {generatedTime}. It should revalidate every minute.
             </p>
             <div className="mt-6 flex gap-6">
@@ -363,8 +363,8 @@ export async function getStaticProps() {
 
   const date = new Date();
   return {
+    revalidate: 60,
     props: {
-      revalidate: 60,
       generatedTime:
         date.toLocaleDateString('nl-NL') +
         ' at ' +
