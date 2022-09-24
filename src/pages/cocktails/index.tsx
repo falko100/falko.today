@@ -191,6 +191,10 @@ function groupByFirstLetter(cocktails: ShortDrink[]): {
     return !isNaN(Number(cocktail.name[0]));
   });
 
+  if (groupedCocktails['#'].length === 0) {
+    delete groupedCocktails['#'];
+  }
+
   for (let i = 0; i < 10; i++) {
     delete groupedCocktails[+i];
   }
