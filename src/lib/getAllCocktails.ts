@@ -91,7 +91,7 @@ export async function getAllCocktailsByLetter(
 
 export async function getAllCocktails(): Promise<Drink[]> {
   let result: Drink[] = [];
-  const letters = 'abcdefghijlkmnopqrstuvwxyz'.split('');
+  const letters = 'abcdefghijlkmnopqrstuvwxyz1234567890'.split('');
   for (let i = 0; i < letters.length; i++) {
     const letter = letters[i];
     const { drinks } = await getAllCocktailsByLetter(letter);

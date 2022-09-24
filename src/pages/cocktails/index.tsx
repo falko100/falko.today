@@ -76,8 +76,9 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
     return !showOnlyIBA || cocktail.IBA !== null;
   });
 
+  const allCocktailsByFirstLetter = groupByFirstLetter(cocktails);
   const filteredCocktails = availableCocktails.filter((cocktail) =>
-    cocktail.name.toUpperCase().startsWith(filteredLetter)
+    allCocktailsByFirstLetter[filteredLetter].includes(cocktail)
   );
 
   const cocktailsGroupedByLetter = groupByFirstLetter(availableCocktails);
@@ -107,6 +108,7 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
             onClick={() => setFilteredLetter(key)}
             key={key}
             className={`block rounded bg-white px-3 py-1 ring-1 dark:bg-zinc-800
+            ${isNaN(Number(key)) ? 'order-1' : 'order-2'}
             ${
               key === filteredLetter &&
               'text-teal-500 ring-teal-500 dark:text-teal-200'
@@ -121,6 +123,12 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
           </button>
         ))}
       </nav>
+
+      <p className="text-zinc-600 dark:text-zinc-400">
+        Showing {filteredCocktails.length} cocktails of{' '}
+        {availableCocktails.length} {showOnlyIBA ? 'IBA' : ''} cocktails.
+      </p>
+
       <div className="-mx-2 mt-12 grid max-w-lg grid-cols-3 gap-2 lg:mx-auto lg:max-w-none lg:gap-5">
         {filteredCocktails.map((cocktail) => CocktailCard(cocktail))}
       </div>
@@ -167,12 +175,25 @@ export async function getStaticProps() {
 function groupByFirstLetter(cocktails: ShortDrink[]): {
   [x: string]: ShortDrink[];
 } {
-  return cocktails.reduce((acc: any, cocktail: ShortDrink) => {
-    const firstLetter = cocktail.name[0].toUpperCase();
-    if (!acc[firstLetter]) {
-      acc[firstLetter] = [];
-    }
-    acc[firstLetter].push(cocktail);
-    return acc;
-  }, {});
+  const groupedCocktails = cocktails.reduce(
+    (acc: any, cocktail: ShortDrink) => {
+      const firstLetter = cocktail.name[0].toUpperCase();
+      if (!acc[firstLetter]) {
+        acc[firstLetter] = [];
+      }
+      acc[firstLetter].push(cocktail);
+      return acc;
+    },
+    {}
+  );
+
+  groupedCocktails['#'] = cocktails.filter((cocktail) => {
+    return !isNaN(Number(cocktail.name[0]));
+  });
+
+  for (let i = 0; i < 10; i++) {
+    delete groupedCocktails[+i];
+  }
+
+  return groupedCocktails;
 }
