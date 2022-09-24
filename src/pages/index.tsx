@@ -258,7 +258,13 @@ function Photos() {
   );
 }
 
-export default function Home({ articles }: { articles: ArticleType[] }) {
+export default function Home({
+  generatedTime,
+  articles,
+}: {
+  generatedTime: string;
+  articles: ArticleType[];
+}) {
   return (
     <>
       <Head>
@@ -299,6 +305,13 @@ export default function Home({ articles }: { articles: ArticleType[] }) {
               </a>
               , where we develop reactive product configurators and large
               webplatforms.
+            </p>
+            <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+              Fun fact; I am using Incremental Static Regeneration to generate
+              this website. Its a new feature in Next.js 10.2.0. Its a hybrid of
+              static and server-side rendering. Its a great way to get the best
+              of both worlds. The last time the page was regenerated was on{' '}
+              {generatedTime}. It should revalidate every minute.
             </p>
             <div className="mt-6 flex gap-6">
               <SocialLink
@@ -348,8 +361,14 @@ export async function getStaticProps() {
     await generateRssFeed();
   }
 
+  const date = new Date();
   return {
     props: {
+      revalidate: 60,
+      generatedTime:
+        date.toLocaleDateString('nl-NL') +
+        ' at ' +
+        date.toLocaleTimeString('nl-NL'),
       articles: (await getAllArticles())
         .slice(0, 4)
         .map(({ component, ...meta }) => meta),
