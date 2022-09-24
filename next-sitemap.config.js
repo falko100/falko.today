@@ -3,10 +3,8 @@ module.exports = {
   siteUrl: 'https://falko.today',
   generateRobotsTxt: true,
   exclude: [],
-  generateIndexSitemap: false,
+  generateIndexSitemap: true,
   robotsTxtOptions: {
-    additionalSitemaps: [
-
-    ],
+    additionalSitemaps: [],
   },
-}
+};

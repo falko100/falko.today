@@ -354,7 +354,6 @@ export async function getStaticProps() {
     await generateRssFeed();
   }
 
-  const date = new Date();
   return {
     props: {
       articles: (await getAllArticles())

@@ -11,6 +11,16 @@ const nextConfig = {
     newNextLinkBehavior: true,
     scrollRestoration: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.thecocktaildb.com',
+        port: '',
+        pathname: '/images/media/drink/**',
+      },
+    ],
+  },
 }
 
 const withMDX = nextMDX({
