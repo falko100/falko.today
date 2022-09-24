@@ -50,8 +50,10 @@ export type Drink = {
   strVideo: string | null;
 };
 
+export type Ingredient = { name: string; measurement: string | null };
+
 export function getAllIngredientsFromCocktail(cocktail: Drink) {
-  const ingredients: { name: string; measurement: string | null }[] = [];
+  const ingredients: Ingredient[] = [];
 
   for (let i: number = 1; i <= 15; i++) {
     // @ts-ignore

@@ -1,17 +1,72 @@
 import { SimpleLayout } from '@/components/SimpleLayout';
-import { Drink, getAllCocktails } from '@/lib/getAllCocktails';
+import {
+  Drink,
+  getAllCocktails,
+  getAllIngredientsFromCocktail,
+  Ingredient,
+} from '@/lib/getAllCocktails';
 import slugify from '@/lib/slugify';
 import { useState } from 'react';
 import Toggle from '@/components/inputs/Toggle';
+import Image from 'next/future/image';
+
+function CocktailCard(cocktail: ShortDrink) {
+  return (
+    <div
+      key={cocktail.id}
+      className="flex flex-col overflow-hidden rounded-lg shadow-lg"
+    >
+      <div className="flex-shrink-0">
+        <Image
+          className="w-full object-cover"
+          src={cocktail.image}
+          width={400}
+          height={400}
+          alt=""
+        />
+      </div>
+      <div className="flex flex-1 flex-col justify-between bg-white px-6 py-4">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-indigo-600">
+            <a
+              href={'/cocktails/category/' + slugify(cocktail.name)}
+              className="hover:underline"
+            >
+              {cocktail.category}
+            </a>
+          </p>
+          <a
+            href={'/cocktails/' + slugify(cocktail.name)}
+            className="mt-1 block"
+          >
+            <p className="text-xl font-semibold text-gray-900">
+              {cocktail.name}
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              {cocktail.ingredients
+                .map((ingredient) => ingredient.name)
+                .join(', ')}
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
   const [showOnlyIBA, setShowOnlyIBA] = useState(true);
+  const [filteredLetter, setFilteredLetter] = useState('A');
 
-  const cocktailsGroupedByLetter = groupByFirstLetter(
-    cocktails.filter((cocktail) => {
-      return !showOnlyIBA || cocktail.isIBA;
-    })
+  const availableCocktails = cocktails.filter((cocktail) => {
+    return !showOnlyIBA || cocktail.isIBA;
+  });
+
+  const filteredCocktails = availableCocktails.filter((cocktail) =>
+    cocktail.name.toUpperCase().startsWith(filteredLetter)
   );
+
+  const cocktailsGroupedByLetter = groupByFirstLetter(availableCocktails);
 
   return (
     <SimpleLayout title="Cocktails">
@@ -25,47 +80,53 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
       <p>Jump to cocktails starting with a letter:</p>
       <nav className="mb-4 mt-2 flex flex-wrap gap-1">
         {Object.keys(cocktailsGroupedByLetter).map((key) => (
-          <a
+          <button
+            type="button"
+            onClick={() => setFilteredLetter(key)}
             key={key}
-            href={'#cocktails-' + key}
-            className="block border px-3 py-1"
+            className={`block border px-3 py-1 ${
+              key === filteredLetter && 'bg-teal-600 text-white'
+            }`}
           >
             {key}
-          </a>
+          </button>
         ))}
       </nav>
-      <div>
-        {Object.keys(cocktailsGroupedByLetter).map((key) => (
-          <div key={key} id={'cocktails-' + key}>
-            <h1 className="text-xl">
-              Cocktails that start with {key.toUpperCase()}
-            </h1>
-            <div className="my-4 flex flex-wrap gap-x-2 gap-y-4">
-              {cocktailsGroupedByLetter[key].map((cocktail) => (
-                <a
-                  className="block border py-1 px-2"
-                  key={cocktail.id}
-                  href={'/cocktails/' + slugify(cocktail.name)}
-                >
-                  {cocktail.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
+      <div className="mx-auto mt-12 grid max-w-lg gap-5 lg:max-w-none lg:grid-cols-3">
+        {filteredCocktails.map((cocktail) => CocktailCard(cocktail))}
       </div>
     </SimpleLayout>
   );
 }
 
 export async function getStaticProps() {
-  const cocktails = (await getAllCocktails()).map(
+  let cocktails;
+
+  // const fs = require('fs');
+  // if (fs.existsSync(`api-cache/cocktails-index.json`)) {
+  //   cocktails = JSON.parse(fs.readFileSync(`api-cache/cocktails-index.json`));
+  // } else {
+  cocktails = (await getAllCocktails()).map(
     (drink: Drink): ShortDrink => ({
       name: drink.strDrink,
+      image: drink.strDrinkThumb,
+      ingredients: getAllIngredientsFromCocktail(drink),
       id: drink.idDrink,
+      category: drink.strCategory,
       isIBA: drink.strIBA !== null,
     })
   );
+
+  // fs.writeFile(
+  //   `api-cache/cocktails-index.json`,
+  //   JSON.stringify(cocktails),
+  //   (err: NodeJS.ErrnoException | null) => {
+  //     if (err) {
+  //       console.error(err);
+  //     }
+  //   }
+  // );
+  // }
 
   return {
     props: {
@@ -76,6 +137,9 @@ export async function getStaticProps() {
 
 type ShortDrink = {
   name: string;
+  image: string;
+  category: string;
+  ingredients: Ingredient[];
   id: string;
   isIBA: boolean;
 };
