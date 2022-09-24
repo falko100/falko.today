@@ -6,9 +6,18 @@ import {
   Ingredient,
 } from '@/lib/getAllCocktails';
 import slugify from '@/lib/slugify';
-import { useState } from 'react';
 import Toggle from '@/components/inputs/Toggle';
 import Image from 'next/future/image';
+import useLocalStorageState from 'use-local-storage-state';
+
+type ShortDrink = {
+  name: string;
+  image: string;
+  category: string;
+  ingredients: Ingredient[];
+  id: string;
+  IBA: string | null;
+};
 
 function CocktailCard(cocktail: ShortDrink) {
   return (
@@ -25,21 +34,21 @@ function CocktailCard(cocktail: ShortDrink) {
           alt=""
         />
       </div>
-      <div className="flex flex-1 flex-col justify-between bg-white p-2 lg:px-6 lg:py-4">
+      <div className="flex flex-1 flex-col justify-between bg-white p-2 dark:bg-zinc-800 lg:px-6 lg:py-4">
         <div className="flex-1">
-          <p className="text-[12px] font-medium text-indigo-600 lg:text-sm">
+          <p className="text-[12px] font-medium text-teal-600 lg:text-sm">
             <a
               href={'/cocktails/category/' + slugify(cocktail.name)}
               className="hover:underline"
             >
-              {cocktail.category}
+              {cocktail.IBA || cocktail.category}
             </a>
           </p>
           <a
             href={'/cocktails/' + slugify(cocktail.name)}
             className="mt-1 block"
           >
-            <p className="text-sm font-semibold text-gray-900 lg:text-xl">
+            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 lg:text-xl">
               {cocktail.name}
             </p>
             <p className="mt-1 hidden text-sm text-gray-500 lg:block">
@@ -55,11 +64,16 @@ function CocktailCard(cocktail: ShortDrink) {
 }
 
 export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
-  const [showOnlyIBA, setShowOnlyIBA] = useState(true);
-  const [filteredLetter, setFilteredLetter] = useState('A');
+  const [showOnlyIBA, setShowOnlyIBA] = useLocalStorageState('show_only_iba', {
+    defaultValue: true,
+  });
+  const [filteredLetter, setFilteredLetter] = useLocalStorageState(
+    'filtered_letter',
+    { defaultValue: 'A' }
+  );
 
   const availableCocktails = cocktails.filter((cocktail) => {
-    return !showOnlyIBA || cocktail.isIBA;
+    return !showOnlyIBA || cocktail.IBA !== null;
   });
 
   const filteredCocktails = availableCocktails.filter((cocktail) =>
@@ -69,7 +83,12 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
   const cocktailsGroupedByLetter = groupByFirstLetter(availableCocktails);
 
   return (
-    <SimpleLayout title="Cocktails">
+    <SimpleLayout
+      title="Cocktails"
+      intro={
+        'I got into making cocktails a while ago after I saw an amazing bartender set online. I bought the set and started making cocktails. I started with the classics and then moved on to more complex cocktails. I have a lot of fun making cocktails and I hope you enjoy the ones I have made. My specialty is the Espresso Martini, a favorite of Evelyn.'
+      }
+    >
       <Toggle
         className="mb-4"
         enabled={showOnlyIBA}
@@ -77,16 +96,26 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
         title="Show only IBA cocktails"
         helpText=" (International Bartenders Association)"
       />
-      <p>Jump to cocktails starting with a letter:</p>
+      <p className="text-zinc-600 dark:text-zinc-400">
+        Because there are {cocktails.length} cocktails in my collections, you
+        can filter here based on the starting letter.
+      </p>
       <nav className="mb-4 mt-2 flex flex-wrap gap-1">
         {Object.keys(cocktailsGroupedByLetter).map((key) => (
           <button
             type="button"
             onClick={() => setFilteredLetter(key)}
             key={key}
-            className={`block border px-3 py-1 ${
-              key === filteredLetter && 'bg-teal-600 text-white'
-            }`}
+            className={`block rounded bg-white px-3 py-1 ring-1 dark:bg-zinc-800
+            ${
+              key === filteredLetter &&
+              'text-teal-500 ring-teal-500 dark:text-teal-200'
+            }
+            ${
+              key !== filteredLetter &&
+              'text-zinc-500 ring-zinc-900/5 dark:ring-white/10'
+            }
+            `}
           >
             {key}
           </button>
@@ -113,7 +142,7 @@ export async function getStaticProps() {
       ingredients: getAllIngredientsFromCocktail(drink),
       id: drink.idDrink,
       category: drink.strCategory,
-      isIBA: drink.strIBA !== null,
+      IBA: drink.strIBA,
     })
   );
 
@@ -134,15 +163,6 @@ export async function getStaticProps() {
     },
   };
 }
-
-type ShortDrink = {
-  name: string;
-  image: string;
-  category: string;
-  ingredients: Ingredient[];
-  id: string;
-  isIBA: boolean;
-};
 
 function groupByFirstLetter(cocktails: ShortDrink[]): {
   [x: string]: ShortDrink[];

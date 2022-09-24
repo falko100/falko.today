@@ -21,8 +21,10 @@ function DetailRow(stat: string, value: string) {
   return (
     <div className="border-t border-gray-200">
       <div className="py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-3">
-        <dt className="text-sm font-medium text-gray-500">{stat}</dt>
-        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+        <dt className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          {stat}
+        </dt>
+        <dd className="mt-1 text-sm text-zinc-800 dark:text-zinc-100 sm:col-span-2 sm:mt-0">
           {value}
         </dd>
       </div>
@@ -85,7 +87,7 @@ export default function Cocktail({
             <div className="mx-auto max-w-prose text-base lg:max-w-none">
               <div>
                 <Link
-                  className="mb-4 inline-flex content-center items-center text-sm"
+                  className="mb-4 inline-flex content-center items-center text-sm text-zinc-800 dark:text-zinc-100"
                   href="/cocktails"
                 >
                   <ArrowLeftIcon className="mr-2 h-4 w-4" />
@@ -103,7 +105,7 @@ export default function Cocktail({
                 {cocktail.strInstructions}
               </p>
 
-              <h3 className="mt-5 text-lg font-medium leading-6 text-gray-900">
+              <h3 className="mt-5 text-lg font-medium leading-6 text-zinc-800 dark:text-zinc-100">
                 Cocktail Information
               </h3>
               <dl className="pt-3 sm:divide-y sm:divide-gray-200">
