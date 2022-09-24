@@ -9,7 +9,7 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
 
   const cocktailsGroupedByLetter = groupByFirstLetter(
     cocktails.filter((cocktail) => {
-      return showOnlyIBA || cocktail.isIBA;
+      return !showOnlyIBA || cocktail.isIBA;
     })
   );
 

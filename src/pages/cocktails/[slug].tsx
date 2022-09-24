@@ -9,6 +9,8 @@ import {
 import slugify from '@/lib/slugify';
 import { Container } from '@/components/Container';
 import Image from 'next/future/image';
+import Link from 'next/link';
+import { ArrowLeftIcon } from '@/components/ArticleLayout';
 
 export const meta = {
   title: 'Cocktail',
@@ -45,7 +47,9 @@ export default function Cocktail({
         .map(
           (ingredient) =>
             ingredient.name +
-            (ingredient.measurement ? ` (${ingredient.measurement})` : '')
+            (ingredient.measurement
+              ? ` (${ingredient.measurement.trim()})`
+              : '')
         )
         .join(', '),
     },
@@ -80,6 +84,13 @@ export default function Cocktail({
           <div className="mt-8 lg:mt-0">
             <div className="mx-auto max-w-prose text-base lg:max-w-none">
               <div>
+                <Link
+                  className="mb-4 inline-flex content-center items-center text-sm"
+                  href="/cocktails"
+                >
+                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                  <span>Back to cocktails</span>
+                </Link>
                 <h2 className="text-lg font-semibold text-teal-600">
                   {cocktail.strCategory}
                 </h2>
