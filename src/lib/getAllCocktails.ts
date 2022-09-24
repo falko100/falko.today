@@ -103,5 +103,5 @@ export async function getAllCocktails(): Promise<Drink[]> {
     result = result.concat(drinks);
   }
 
-  return result;
+  return result.sort((a, b) => a.strDrink.localeCompare(b.strDrink));
 }
