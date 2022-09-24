@@ -40,8 +40,14 @@ export default function Toggle({
         />
       </Switch>
       <Switch.Label as="span" className="ml-3">
-        <span className="text-base font-medium text-gray-900">{title}</span>
-        {helpText && <span className="text-sm text-gray-500">{helpText}</span>}
+        <span className="text-base font-medium text-zinc-800 dark:text-zinc-100">
+          {title}
+        </span>
+        {helpText && (
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            {helpText}
+          </span>
+        )}
       </Switch.Label>
     </Switch.Group>
   );
