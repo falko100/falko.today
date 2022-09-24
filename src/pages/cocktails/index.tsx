@@ -37,12 +37,7 @@ function CocktailCard(cocktail: ShortDrink) {
       <div className="flex flex-1 flex-col justify-between bg-white p-2 dark:bg-zinc-800 lg:px-6 lg:py-4">
         <div className="flex-1">
           <p className="text-[12px] font-medium text-teal-600 lg:text-sm">
-            <a
-              href={'/cocktails/category/' + slugify(cocktail.name)}
-              className="hover:underline"
-            >
-              {cocktail.IBA || cocktail.category}
-            </a>
+            {cocktail.IBA || cocktail.category}
           </p>
           <a
             href={'/cocktails/' + slugify(cocktail.name)}
