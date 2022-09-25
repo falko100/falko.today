@@ -21,13 +21,14 @@ type ShortDrink = {
 
 function CocktailCard(cocktail: ShortDrink) {
   return (
-    <div
+    <a
+      href={'/cocktails/' + slugify(cocktail.name)}
       key={cocktail.id}
-      className="flex flex-col overflow-hidden rounded-lg shadow-lg"
+      className="group flex flex-col overflow-hidden rounded-lg shadow-lg transition-shadow hover:shadow-xl"
     >
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 overflow-hidden">
         <Image
-          className="w-full object-cover"
+          className="w-full object-cover transition-transform ease-in-out group-hover:scale-110 group-hover:transform"
           src={cocktail.image}
           width={400}
           height={400}
@@ -39,10 +40,7 @@ function CocktailCard(cocktail: ShortDrink) {
           <p className="text-[12px] font-medium text-teal-600 lg:text-sm">
             {cocktail.IBA || cocktail.category}
           </p>
-          <a
-            href={'/cocktails/' + slugify(cocktail.name)}
-            className="mt-1 block"
-          >
+          <div className="mt-1 block">
             <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 lg:text-xl">
               {cocktail.name}
             </p>
@@ -51,10 +49,10 @@ function CocktailCard(cocktail: ShortDrink) {
                 .map((ingredient) => ingredient.name)
                 .join(', ')}
             </p>
-          </a>
+          </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -82,7 +80,7 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
     <SimpleLayout
       title="Cocktails"
       intro={
-        'I got into making cocktails a while ago after I saw an amazing bartender set online. I bought the set and started making cocktails. I started with the classics and then moved on to more complex cocktails. I have a lot of fun making cocktails and I hope you enjoy the ones I have made. My specialty is the Espresso Martini, a favorite of Evelyn.'
+        'I got into making cocktails a while ago after I saw an amazing bartender set online. I bought the set and started making cocktails. I started with the classics and then moved on to more complex cocktails. I have a lot of fun making cocktails and I hope you enjoy the ones I have made. My specialty is the Espresso Martini, a favorite of Evelyn. This is not a coincidence.'
       }
     >
       <Toggle
@@ -124,7 +122,7 @@ export default function Cocktails({ cocktails }: { cocktails: ShortDrink[] }) {
         {availableCocktails.length} {showOnlyIBA ? 'IBA' : ''} cocktails.
       </p>
 
-      <div className="-mx-2 mt-12 grid max-w-lg grid-cols-3 gap-2 lg:mx-auto lg:max-w-none lg:gap-5">
+      <div className="-mx-2 mt-12 grid grid-cols-3 gap-2 lg:mx-auto lg:gap-5">
         {filteredCocktails.map((cocktail) => CocktailCard(cocktail))}
       </div>
     </SimpleLayout>
