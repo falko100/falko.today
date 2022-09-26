@@ -12,6 +12,7 @@ const nextConfig = {
     scrollRestoration: true,
   },
   images: {
+    domains: ['www.thecocktaildb.com'],
     remotePatterns: [
       {
         protocol: 'https',

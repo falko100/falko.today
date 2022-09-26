@@ -8,6 +8,7 @@ export class Cocktail {
   public slug: string;
   public isAlcoholic: boolean;
   public category: string;
+  public IBA: string | null;
   public glass: string;
   public instructions: string | null;
   public thumbnail: string;
