@@ -4,7 +4,7 @@ import rehypePrism from '@mapbox/rehype-prism'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['tsx', 'jsx', 'mdx'],
+  pageExtensions: ['ts', 'tsx', 'jsx', 'mdx'],
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
@@ -16,7 +16,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'www.thecocktaildb.com',
-        port: '',
+        port: "443",
         pathname: '/images/media/drink/**',
       },
     ],
