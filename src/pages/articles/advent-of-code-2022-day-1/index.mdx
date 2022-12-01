@@ -1,0 +1,131 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-01',
+  title: 'Advent of Code - Day 1',
+  description:
+    'Solving the first day of the Advent of Code 2022 with PHP',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Advent of what?!
+
+One of my co-workers, Berend, send this to our entire development team. This challenge was new for me, but he participated before.
+Simply said, the Advent of Code is a series of programming puzzles of varying difficulty. If you have any programming skills, you can participate.
+The global leaderboards are highly competitive, but you can also participate for fun. The puzzles are released daily, and you can solve them in any programming language you like.
+Within our company Berend set up a private leaderboard, so we can compete with each other. It is a lot of fun to discuss the puzzles with each other.
+Everyone has their own approach, and it is interesting to see how others solve the same problem. For example, Jelle did the challenge in JavaScript, Marius did it in mostly vanilla PHP and I did it with PHP plus the Laravel framework.
+
+I will post my solutions to the challenges here, so you can see how I solved them.
+
+> "The Advent of Code is a series of small programming puzzles for a variety of skill sets and skill levels that can be solved in any programming language you like."<br />- Advent of Code
+
+## Spoilers ahead of the challenges of Day 1
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment
+
+> "Elves are very picky about their food, and they won't eat anything that isn't a perfect score of 10.0. The food they do like, they'll eat in large quantities. So, you can imagine that they're going to need a lot of food."
+> <br /> — Artificial Intelligence Santa
+
+We got an input file containing a list of numbers, seperated by newlines. Each block represents the food being carried by an elf.
+The first elf is carrying 3 items for a total of 6000 calories. The second one is carrying one item of 400 calories.
+
+```
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
+```
+
+> "In case the Elves get hungry and need extra snacks, they need to know which Elf to ask: they'd like to know how many Calories are being carried by the Elf carrying the most Calories. In the example above, this is 24000 (carried by the fourth Elf)."
+> <br /> — Eric Wastl, Advent of Code 2022
+
+## Part 1 - Counting Calories for Elves
+
+We got a list of 2275 lines of numbers, seperated by newlines. I started off by saving the file to my disk, and reading it into a string.
+Next up, I split the string on newlines, and converted the strings to integers. This resulted in a multi-dimensional array of integers.
+
+```php
+// Get all the lines from the input file
+$input = file_get_contents(__DIR__ '/../storage/app/input.txt');
+
+// Split the string into an array of lines
+$elves = explode("\n\n", $input);
+
+// Loop through the elves
+$elves = array_map(function ($elf) {
+    // Split the string into an array of lines
+    $foodItems = explode("\n", $elf);
+
+    // Loop through the individual items and convert them to integers
+    return array_map(fn($foodItem) => (int)$foodItem, $foodItems);
+}, $elves);
+
+// Gather the total calorie values carried by each elf
+$elvesTotal = array_map(function ($elf) {
+    // Get the total of the food items
+    return array_sum($elf);
+}, $elves);
+```
+
+Ok, now we have an array containing the total calories carried by each elf. We can use the `max()` function to get the highest value.
+
+```php
+echo 'The solution to part 1 is: ' . max($elvesTotal);
+```
+
+## Part 2 - Multiple elves carrying the highest amount food
+
+Next up: "Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?"
+
+This is a bit more tricky. We need to find the top three elves carrying the most calories. The `max()` function only returns the highest value.
+We can use the `array_multisort()` function to sort the array by the values. This will return the keys of the array in the order of the values.
+We can then use the `array_slice()` function to get the top three keys.
+
+```php
+// Sort the array by the values
+array_multisort($elvesTotal, SORT_DESC, $elvesTotal);
+
+// Get the top three keys
+$topThree = array_slice($elvesTotal, 0, 3);
+
+// Get the total calories carried by the top three elves
+echo 'The solution to part 2 is: ' . array_sum($topThree);
+```
+
+But Falko, you said you would use the Laravel framework?
+Well, I did. I used the `collect()` function to convert the array to a collection.
+Then I did some mapping and sorting.
+
+The above code shows the solution when written in plain php. The code below shows the solution when using the Laravel framework.
+I did the solution with Laravel first, and then rewrote it in plain PHP, for the sake of this article.
+
+### Final solution after some refactoring
+
+```php
+$elves = collect(explode("\n\n", Storage::get('input.txt')))
+      ->map(function ($elf) {
+          return collect(explode("\n", $elf))
+              ->map(fn($food) => (int)$food)->sum();
+      })->sortDesc();
+
+echo 'The solution to part 1 is: ' . $elves->first();
+echo 'The solution to part 2 is: ' . $elves->slice(0, 3)->sum();
+```
+
+
