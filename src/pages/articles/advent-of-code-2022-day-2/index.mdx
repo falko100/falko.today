@@ -1,0 +1,145 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-02',
+  title: 'Advent of Code - Day 2',
+  description:
+    'So we are cheating at Rock, Paper, Scissors. These elves are shady.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+I’m not yet sure if I should write a blog post for every day of the Advent of Code or combine them into one post.
+For now, I’ll try to write a post for every day and see how that goes.
+
+## Spoilers ahead of the challenges of Day 2
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment (part 1)
+
+> "Elves are competative, so let’s give them a game to play. The Elves play a game called Rock, Paper, Scissors. It’s played by two players, where each player chooses one of three options: Rock, Paper, or Scissors. The rules are as follows:"
+> "Rock beats Scissors, Scissors beats Paper, and Paper beats Rock. If both players choose the same option, it’s a tie. The first player to win 2 out of 3 rounds wins the game."
+> <br /> — Artificial Intelligence Santa
+
+We got an input file containing a list of combinations. An elf explains to us that the first character of each line is the opponent’s choice, and the second character is ... the elf is called away.
+We need to figure out what the second character is. We assume that the second character repesents our choice.
+
+```
+A Y
+B X
+C Z
+```
+
+For winning, we get 6 points, for losing 0 points, and for a tie 3 points.
+The choice of hand also adds a bonus to the score. 1 for Rock, 2 for Paper, and 3 for Scissors.
+We need to calculate the total score of the input file.
+
+## Formatting the input
+
+We need to read the input file and format it into an array of objects.
+Each object should contain the opponent’s choice and our choice.
+
+```php
+// Getting the input from the file
+$input = collect(explode("\n", Storage::get('input-2.txt')))
+  // Splitting the combinations into an array
+  ->map(fn($line) => explode(' ', $line))
+  // Removing the empty line at the end
+  ->filter(fn($line) => count($line) === 2)
+  // Converting the characters to readable values
+  ->map(function ($line) {
+      $line[0] = str_replace(['A', 'B', 'C'], ['Rock', 'Paper', 'Scissors'], $line[0]);
+      $line[1] = str_replace(['X', 'Y', 'Z'], ['Rock', 'Paper', 'Scissors'], $line[1]);
+
+      return $line;
+  });
+```
+
+## Calculating the score
+
+We need to calculate the score for each combination.
+We can do this by mapping each combination into a score.
+Let’s not forget the bonus score, because this will lead to a wrong answer.
+Not saying I’ve seen the "This is not the correct answer" screen... 😅
+
+Ok... let’s get back to the code.
+
+```php
+$results = $input->map(function ($line) {
+  $elf = $line[0];
+  $me = $line[1];
+
+  // The bonus for the choice of hand
+  $bonus = match ($me) {
+    'Rock' => 1,
+    'Paper' => 2,
+    'Scissors' => 3,
+  };
+
+  // Check if we win or lose, base the score on this
+  return match ($elf) {
+    'Rock' => match ($me) {
+      'Rock' => 3 + $base,
+      'Paper' => 6 + $base,
+      'Scissors' => 0 + $base,
+    },
+    'Paper' => match ($me) {
+      'Rock' => 0 + $base,
+      'Paper' => 3 + $base,
+      'Scissors' => 6 + $base,
+    },
+    'Scissors' => match ($me) {
+      'Rock' => 6 + $base,
+      'Paper' => 0 + $base,
+      'Scissors' => 3 + $base,
+    },
+  };
+```
+
+And now we can easy get the total score:
+
+```php
+echo 'The anser to challenge 1 is: ' . $results->sum();
+```
+
+## Part 2 - The actual strategy
+
+The shady elf returns. He explains that the second character is not our choice, but whether we should win or lose.
+Now our code needs to be adjusted to take this into account. There’s an easy way to do it. Let’s start by adjusting the mapping:
+
+```php
+$line[1] = str_replace(['X', 'Y', 'Z'], ['Lose', 'Draw', 'Win'], $line[1]);
+```
+
+We just need to determine the value of `$me` based on the `$line[1]` value.
+
+```php
+$me = match ($result) {
+  'Lose' => match ($elf) {
+    'Rock' => 'Scissors',
+    'Paper' => 'Rock',
+    'Scissors' => 'Paper',
+  },
+  'Draw' => match ($elf) {
+    'Rock' => 'Rock',
+    'Paper' => 'Paper',
+    'Scissors' => 'Scissors',
+  },
+  'Win' => match ($elf) {
+    'Rock' => 'Paper',
+    'Paper' => 'Scissors',
+    'Scissors' => 'Rock',
+  },
+};
+```
+
+And that’s it. We now have the correct answer for the second challenge.
+
+```php
+echo 'The anser to challenge 2 is: ' . $results->sum();
+```
