@@ -12,8 +12,8 @@ export default (props) => <ArticleLayout meta={meta} {...props} />
 
 ## Introduction
 
-Day 3, and still going strong. I'm not sure if I'll be able to finish all 25 days, but I'll try my best. Today's challenge is about rucksacks with overlapping items.
-I have to admit, this one was fun to solve. I'm not sure if my solution is the most efficient, but it works. Let's get started.
+Day 3, and still going strong. I’m not sure if I’ll be able to finish all 25 days, but I’ll try my best. Today’s challenge is about rucksacks with overlapping items.
+I have to admit, this one was fun to solve. I’m not sure if my solution is the most efficient, but it works. Let’s get started.
 
 ## Spoilers ahead of the challenges of Day 3
 
@@ -22,7 +22,7 @@ After doing the challenges, you can come back and read this article to see how I
 
 ## The assignment (part 1)
 
-> "The Elves all have rucksacks with an equal number of items. Unfortunately, the packing Elf didn't do a very good job of packing the rucksacks, and they're all a bit off balance. The Elves are going to have to take the items out of the rucksacks and re-pack them into new ones."
+> "The Elves all have rucksacks with an equal number of items. Unfortunately, the packing Elf didn’t do a very good job of packing the rucksacks, and they’re all a bit off balance. The Elves are going to have to take the items out of the rucksacks and re-pack them into new ones."
 > <br /> — Artificial Intelligence Santa
 
 Our sample data is as follows:
@@ -43,7 +43,7 @@ Items have a priority of a = 1 up to Z = 52.
 We need to find the item that is in both compartments per rucksack, and return the sum of the priorities of those items.
 
 ```php
-// Let's get ourself a nice array of rucksacks
+// Let’s get ourself a nice array of rucksacks
 $rucksacks = collect(explode("\n", Storage::get('input-3.txt')))
   // Filter out empty lines
   ->filter(fn($line) => $line !== '')
@@ -136,5 +136,5 @@ echo $overlappingItemValues->sum();
 ```
 
 ## Conclusion
-Part 2 was a lot easier than part 1. I'm not sure if my solution is the most efficient, but it works.
-I'm looking forward to tomorrow's challenge. I hope you enjoyed this article, and I'll see you tomorrow.
+Part 2 was a lot easier than part 1. I’m not sure if my solution is the most efficient, but it works.
+I’m looking forward to tomorrow’s challenge. I hope you enjoyed this article, and I’ll see you tomorrow.
