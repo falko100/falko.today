@@ -84,19 +84,19 @@ $results = $input->map(function ($line) {
   // Check if we win or lose, base the score on this
   return match ($elf) {
     'Rock' => match ($me) {
-      'Rock' => 3 + $base,
-      'Paper' => 6 + $base,
-      'Scissors' => 0 + $base,
+      'Rock' => 3 + $bonus,
+      'Paper' => 6 + $bonus,
+      'Scissors' => 0 + $bonus,
     },
     'Paper' => match ($me) {
-      'Rock' => 0 + $base,
-      'Paper' => 3 + $base,
-      'Scissors' => 6 + $base,
+      'Rock' => 0 + $bonus,
+      'Paper' => 3 + $bonus,
+      'Scissors' => 6 + $bonus,
     },
     'Scissors' => match ($me) {
-      'Rock' => 6 + $base,
-      'Paper' => 0 + $base,
-      'Scissors' => 3 + $base,
+      'Rock' => 6 + $bonus,
+      'Paper' => 0 + $bonus,
+      'Scissors' => 3 + $bonus,
     },
   };
 ```

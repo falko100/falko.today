@@ -1,0 +1,140 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-03',
+  title: 'Advent of Code - Day 3',
+  description:
+    'Bags of holding? These elves are crazy. I wonder what they are up to.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 3, and still going strong. I'm not sure if I'll be able to finish all 25 days, but I'll try my best. Today's challenge is about rucksacks with overlapping items.
+I have to admit, this one was fun to solve. I'm not sure if my solution is the most efficient, but it works. Let's get started.
+
+## Spoilers ahead of the challenges of Day 3
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment (part 1)
+
+> "The Elves all have rucksacks with an equal number of items. Unfortunately, the packing Elf didn't do a very good job of packing the rucksacks, and they're all a bit off balance. The Elves are going to have to take the items out of the rucksacks and re-pack them into new ones."
+> <br /> — Artificial Intelligence Santa
+
+Our sample data is as follows:
+
+```txt
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+```
+
+> The first rucksack contains the items vJrwpWtwJgWrhcsFMMfFFhFp, which means its first compartment contains the items vJrwpWtwJgWr, while the second compartment contains the items hcsFMMfFFhFp. The only item type that appears in both compartments is lowercase p.<br />
+> Advent of Code - Day 3
+
+Items have a priority of a = 1 up to Z = 52.
+We need to find the item that is in both compartments per rucksack, and return the sum of the priorities of those items.
+
+```php
+// Let's get ourself a nice array of rucksacks
+$rucksacks = collect(explode("\n", Storage::get('input-3.txt')))
+  // Filter out empty lines
+  ->filter(fn($line) => $line !== '')
+  // Split the rucksacks into compartments
+  ->map(function($line) {
+    $compartments = str_split($line, strlen($line) / 2);
+
+    // And split the compartments into items
+    $compartments[0] = str_split($compartments[0]);
+    $compartments[1] = str_split($compartments[1]);
+
+    return $compartments;
+  });
+```
+
+Next up, we need to find the items that are in both compartments. We can do this by using the `intersect` method on the collection.
+
+```php
+// Find the items that are in both compartments
+$overlappingItems = $rucksacks->map(function($compartments) {
+  return collect($compartments[0])->intersect($compartments[1]);
+})->flatten();
+```
+
+Now that we have the item that is in both compartments per rucksack, we need to find the priority of those items.
+I created an array with the alphabet, and mapped the items to their priority.
+
+```php
+// Get the list of items with their priority
+$itemValues = collect(array_merge(range('a', 'z'), range('A', 'Z')))
+  ->mapWithKeys(function ($item, $key) {
+    return [$item => $key + 1];
+  });
+
+// Get the priority of the overlapping items
+$overlappingItemValues = $overlappingItems->map(
+  function($item) use ($itemValues) {
+    return $itemValues[$item];
+  },
+);
+```
+
+Finally, we need to sum up the priorities of the items. We can do this by using the `sum` method on the collection.
+
+```php
+echo 'The sum of the priorities of the overlapping items is: ';
+echo $overlappingItemValues->sum();
+```
+
+## Groups of 3 elves and their badges
+
+The elves need to be grouped in groups of 3. Each group has an item overlapping.
+Those we need to find for their "updated authenticity sticker".
+
+```php
+// I started with the rucksacks from the previous challenge, but without the compartments.
+$rucksacks = collect(explode("\n", Storage::get('input-3.txt')))
+  ->filter(fn($line) => $line !== '')
+  ->map(function($line) {
+    return str_split($line);
+  });
+
+// Grouped them into chunks of 3.
+$groupsOfElves = $rucksacks->chunk(3);
+
+// Find the items that are in all 3 rucksacks
+$overlappingItemPerGroup = $groupsOfElves->map(function($group) {
+  $elves = $group->values();
+  $elf1 = $elves[0];
+  $elf2 = $elves[1];
+  $elf3 = $elves[2];
+
+  return collect($elf1)->intersect($elf2)->intersect($elf3)->unique();
+});
+```
+
+Now that we have the items that are in all 3 rucksacks, we need to find the priority of those items.
+Here we can use the same code as before.
+
+```php
+// Get the priority of the overlapping items
+$overlappingItemValues = $overlappingItemPerGroup->map(
+  function($item) use ($itemValues) {
+    return $itemValues[$item];
+  },
+);
+
+echo 'The sum of the priorities of the overlapping items is: ';
+echo $overlappingItemValues->sum();
+```
+
+## Conclusion
+Part 2 was a lot easier than part 1. I'm not sure if my solution is the most efficient, but it works.
+I'm looking forward to tomorrow's challenge. I hope you enjoyed this article, and I'll see you tomorrow.
