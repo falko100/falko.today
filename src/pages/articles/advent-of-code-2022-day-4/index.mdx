@@ -1,0 +1,100 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-04',
+  title: 'Advent of Code - Day 4',
+  description:
+    'If we have to clean, we might as well do it efficiently. Let’s write a script to clean up the data.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 4, I’m a bit later than previous days. Date night last night, so I woke up a bit later. We went to the local Irish pub, and ordered our usual drinks.
+As always, Evelyn got the Kasteel Rouge, and I got the Guinness. So we had to switch ’em around. I ordered the Kasteel Rouge, and she ordered the Guinness.
+It’s starting to become a bit of a tradition. I wonder why this assumption is made.
+
+Afterwards we went to the smallest theater of Enschede and enjoyed Irish Folk music. I actually sang Finnegan’s Wake, partially. It was far from perfect, but it was fun.
+
+## Spoilers ahead of the challenges of Day 4
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment
+
+> "Elves are lazy, and they need to clean the camp. We are going to help them out by writing a script to clean up the data."
+> <br /> — Artificial Intelligence Santa
+
+Our sample data is as follows:
+
+```txt
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+```
+
+> Within the first pair of Elves, the first Elf was assigned sections 2-4 (sections 2, 3, and 4), while the second Elf was assigned sections 6-8 (sections 6, 7, 8).<br />
+> Advent of Code - Day 4
+
+## Let’s solve this puzzle!
+
+We need to find full overlaps in the above sections. The first overlap in the list is 7 on line 3. The next overlap is 3-7 on line 4.
+This list is just the sample data, but the real data is much larger.
+
+```php
+// Let’s get ourself a nice array of regions
+$regions = collect(explode("\n", Storage::get('input-4.txt')))
+  ->filter(fn($line) => $line !== '')
+  ->map(function ($line) {
+    // Split the regions into two sections
+    $sections = explode(',', $line);
+
+    // Make a range for each section, so we have 1,2,3,4 instead of 1-4
+    foreach ($sections as $key => &$section) {
+      $range = explode('-', $sections[$key]);
+      $sections[$key] = range($range[0], $range[1]);
+    }
+
+    // While we're at it, let's find all the overlapping area's.
+    $sections['overlap'] = collect($sections[0])
+      ->intersect($sections[1])
+      ->unique()
+      ->values()
+      ->toArray();
+
+    return $sections;
+  });
+```
+
+Now we have all the data we need to solve the challenge.
+The first question is counting all sections where every area is overlapping.
+
+```php
+$fullyOverlappedRegions = $regions->filter(function ($region) {
+  return count($region['overlap']) === count($region[0])
+    || count($region['overlap']) === count($region[1]);
+});
+
+echo 'Fully overlapped regions: ' . $fullyOverlappedRegions->count();
+```
+
+The second question is counting all sections where at least one area is overlapping.
+
+```php
+$partiallyOverlappedRegions = $regions->filter(function ($region) {
+  return count($region['overlap']) > 0;
+});
+
+echo 'Partially overlapped regions: ' . $partiallyOverlappedRegions->count();
+```
+
+## Conclusion
+This was an easy one. Maybe because I’m a bit more awake.
+Thanks for reading, and I hope you enjoyed this article. If you have any questions, feel free to reach out to me on Twitter @falko100.
+See you tomorrow for Day 5!
