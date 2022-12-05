@@ -1,0 +1,165 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-04',
+  title: 'Advent of Code - Day 5',
+  description:
+    'Programming the CrateMover9000, oh wait, it’s the CraneMover9001!',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 5, another day, another puzzle. Today, I don’t have much to say, so let’s get right into it.
+
+## Spoilers ahead of the challenges of Day 5
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment
+
+This time we have to program a CraneMover9000. The CraneMover9000 is a machine that can move one crate at the time. The machine has a list of instructions that it can execute.
+
+> "The instructions specify a series of actions and how they apply to the available crates. They always end with the instruction that starts the **crane**. The **crane** can move **left** or **right**, grab a crate, or release a crate. The **crane** always starts in the **leftmost** position at the **start** of the instructions. The **crane** moves **left** or **right** one position at a time, then takes an action and repeats this process until the instructions are finished."
+> <br /> — Artificial Intelligence Santa
+
+Our sample data is as follows:
+
+```txt
+    [D]
+[N] [C]
+[Z] [M] [P]
+ 1   2   3
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2
+```
+
+The question is quite simple, given the instructions, what are the top crates in the end?
+
+## Let’s solve this puzzle!
+
+This time I started by creating a class. I called it the `CrateOrganizer` and it accepts the puzzle input as a parameter.
+While setting up the class, we convert the input into two arrays, one for the instructions and one for the stacks of crates.
+
+```php
+class CrateOrganizer
+{
+    private array $stacks = [];
+    private array $instructions = [];
+
+    public function __construct(
+        string $input,
+    ) {
+        [$stacksInput, $instructionsInput] = explode("\n\n", $input);
+
+        $this->convertInputToStacks($stacksInput);
+
+        $this->convertInputToInstructions($instructionsInput);
+    }
+...
+```
+
+The `convertInputToStacks` method is quite simple, we just split the input on newlines and then split the lines on every 4 characters.
+We then replace the crate indicators and spaces, and add them to the stacks array.
+Next we sort the array by key, so the stacks are in the correct order.
+
+```php
+private function convertInputToStacks(string $stacksInput): void
+{
+  $rows = collect(explode("\n", $stacksInput));
+  $rows = $rows->map(fn($items) => str_split($items, 4));
+
+  foreach ($rows as $row) {
+    foreach ($row as $key => $item) {
+      if (str_starts_with($item, '[')) {
+        $this->stacks[$key + 1][] = trim($item, '[] ');
+      }
+    }
+  }
+
+  ksort($this->stacks);
+}
+```
+
+The `convertInputToInstructions` method is a bit more complex.
+We split the input on newlines, and then remove the empty line at the end of our file.
+Next we loop over the instructions and split them on spaces.
+Then we map the instruction to an associative array.
+
+```php
+
+private function convertInputToInstructions(string $instructionsInput): void
+{
+  $this->instructions = collect(explode("\n", $instructionsInput))
+    ->filter(fn($line) => $line !== '')
+    ->map(fn($instruction) => explode(' ', $instruction))
+    ->map(fn($instruction) => [
+      'amount' => (int)$instruction[1],
+      'from' => (int)$instruction[3],
+      'to' => (int)$instruction[5],
+    ])
+    ->toArray();
+}
+```
+
+## Solving part 1
+
+The first part of the puzzle is quite simple, we just have to execute the instructions.
+We start by looping over the instructions and then we loop over the amount of crates we have to move.
+We then take the first crate from the stack and put it in the other stack.
+
+```php
+foreach ($this->instructions as $instruction) {
+  $this->moveOne($instruction['amount'], $instruction['from'], $instruction['to']);
+}
+
+private function moveOne(int $amount, int $from, int $to): void
+{
+  for ($i = 0; $i < $amount; $i++) {
+    $item = array_shift($this->stacks[$from]);
+    array_unshift($this->stacks[$to], $item);
+  }
+}
+```
+
+## Solving part 2
+
+Oh no! It’s not the CraneMover9000, it’s the CraneMover9001! The CraneMover9001 is a bit more advanced than the CraneMover9000.
+It can move multiple crates at the same time, so the output is all wrong!
+Let’s fix that.
+
+```php
+private function moveStacks(int $amount, int $from, int $to)
+{
+  $stacks = array_splice($this->stacks[$from], 0, $amount);
+  $this->stacks[$from] = array_values($this->stacks[$from]);
+
+  $this->stacks[$to] = array_merge($stacks, $this->stacks[$to]);
+}
+```
+
+Quite a simple fix, we just splice the stacks and then merge them together.
+And of course, we need to get the top crates of each stack, as it is the answer to the puzzle.
+
+```php
+private function getTopCrates(): void
+{
+  $result = '';
+
+  foreach($this->stacks as $stack) {
+      $result .= $stack[0];
+  }
+
+  echo 'Result: ' . $result;
+}
+```
+
+## Conclusion
+
+That’s it for today, I hope you enjoyed this article. If you have any questions, feel free to reach out to me on Twitter @falko100.
