@@ -1,0 +1,75 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-06',
+  title: 'Advent of Code - Day 6',
+  description:
+    'Decoding secret messages because we are super experienced in it.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 6, new day, new puzzle. Despite solving it within the first half hour since release, I did not make the leaderboards.
+
+## Spoilers ahead of the challenges of Day 5
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment
+
+The elves need me for my excellent decoding skills. Or as they say "significant experience dealing with signal-based systems".
+
+> "Secret transmissions are being sent to Santa's weather station, but the data is encrypted with a strange new algorithm. The data is being sent as a stream of bits (your puzzle input), but because the signal is quite weak, there are many more 0 bits than 1 bits. The data being sent to you is what appears to be random data, but for each character, the only possible characters are either `0` or `1`, based on the most common bit in the data so far. Even after signal-jamming noise, you can look at the letter distributions in each column and choose the least common letter to reconstruct the original message."
+> <br /> — Artificial Intelligence Santa
+
+Our sample data is as follows:
+
+```txt
+mjqjpqmgbljsphdztnvjfqwrcgsmlb
+```
+
+For the first part of this puzzle, we need to find the first character where the previous 3 characters aren't duplicates. In this case, it's `m`.
+With an index of 7.
+
+## Let’s solve this puzzle!
+
+```php
+$input = 'mjqjpqmgbljsphdztnvjfqwrcgsmlb';
+
+// We start at the 4th character, because we need to check the previous 3 characters.
+for ($i = 3; $i < strlen($input); $i++) {
+  // The make a substring of the current character and the previous 3 characters.
+  $set = substr($input, $i - 3, 4);
+
+  // If the set is not unique, we continue to the next character.
+  if (strlen($set) === count(array_unique(str_split($set)))) {
+    dd('The resulting character is: ' . $i + 1);
+  }
+}
+```
+
+That one was quite easy. The second part of the puzzle is just as simple.
+Instead of groups of 4, the groups are 14 characters.
+
+```php
+$input = 'mjqjpqmgbljsphdztnvjfqwrcgsmlb';
+
+// We start at the 14th character, because we need to check the previous 13 characters.
+for ($i = 13; $i < strlen($input); $i++) {
+  // The make a substring of the current character and the previous 3 characters.
+  $set = substr($input, $i - 13, 14);
+
+  // If the set is not unique, we continue to the next character.
+  if (strlen($set) === count(array_unique(str_split($set)))) {
+    dd('The resulting character is: ' . $i + 1);
+  }
+}
+```
+
+## Conclusion
+
+Aaaand that's it. I hope you enjoyed this article. If you have any questions, feel free to reach out to me on Twitter @falko100.
