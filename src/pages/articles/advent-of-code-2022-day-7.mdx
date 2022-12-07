@@ -1,0 +1,168 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-07',
+  title: 'Advent of Code - Day 7',
+  description:
+    'Converting console output to a tree structure and searching for directory sizing.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 7, finally a bit of a challenge. These introductions get shorter and shorter, because I’m running out of things to say. I’m not sure if I’m going to write one for day 8, but I’ll see how it goes.
+
+## Spoilers ahead of the challenges of Day 7
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## The assignment
+
+The device from one of the previous assignments isn’t only faulty in its communication but also in other stuff. Now we need to clean up the filestorage.
+
+> "The file storage is a mess! Someone has been saving files over other files and we need to help them find the block of bytes they need. The pattern for a filename is the same as before, but now the data is in a new format. Each line represents the data for a single file, and columns are separated by spaces. The first column represents the name of the file. The second column represents the starting block of the file. The third column represents the length of the file in blocks. The file contents are not important for this exercise."
+> <br /> — Artificial Intelligence Santa
+
+Our sample data is as follows:
+
+```txt
+$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k
+```
+
+It represents the output of the computer console. The commands start with a $ and are used for changing directories (`cd`) and listing the contents of a directory (`ls`).
+We need to find the sum of all directories with a maximum size of 100.000. The lines after the `$ ls` command represents files and directories within the current folder.
+
+## Let’s solve this puzzle!
+
+```php
+// initialisation of $puzzleInput omitted because you’ve already seen it in the previous articles
+$folders = $this->buildTree($puzzleInput);
+
+function buildTree(Collection $consoleOutput)
+{
+    // I want an array with the folders as keys and the content as the value.
+    // The content is an array with just the files, as the subfolders can be linked by the keys.
+    $tree = [];
+    // We start at the root directory, so we need to keep track of the current directory.
+    $cwd = '/';
+
+    $consoleOutput->each(function ($line) use (&$cwd, &$tree) {
+        // We need to check if the line is a command or a file.
+        // I'm just checking for the different $ cd commands, as it is the easiest.
+        if ($line === '$ cd /') {
+            $cwd = '/';
+        } elseif ($line === '$ cd ..') {
+            // if we move up, we need to remove the last part of the path.
+            $cwd = str_replace('//', '/', dirname($cwd) . '/');
+        } elseif (str_starts_with($line, '$ cd ')) {
+            // if we are not moving to the root or parent directory, we are moving to a subdirectory.
+            $cwd .= str_replace('$ cd ', '', $line) . '/';
+        }
+
+        // Next we add the directory to the tree if it doesn't exist yet.
+        if (!isset($tree[$cwd])) {
+            $tree[$cwd] = [];
+        }
+
+        // Then, if the line starts with a number, we know it is a file.
+        if (preg_match('/^\d/', $line)) {
+            // We add the file to the current directory in the array.
+            [$filesize, $filename] = explode(' ', $line);
+            $tree[$cwd][] = [
+                'filename' => $filename,
+                'filesize' => $filesize,
+            ];
+        }
+    });
+
+    return $tree;
+}
+```
+
+Now we need to get the size of each folder. We need to account for the size of the folders within the folders as well.
+Our current "tree" is just an array with the files for each directory. Let's calculate the "recursive" size of each directory.
+
+```php
+$folderSizes = $this->getFolderSizes($folders);
+
+function getFolderSizes(array $folders): array
+{
+  // Lets start by converting what we have to a collection of the sum of the sizes of the contained files.
+  $nonRecursiveFolderSizes = collect($folders)
+    ->map(fn($folder) => collect($folder)->sum('filesize'))
+    ->toArray();
+
+  // Now we need to add the sizes of the subfolders to the current folder.
+  return collect($nonRecursiveFolderSizes)
+    ->map(function($folderSize, $key) use ($nonRecursiveFolderSizes) {
+      // The simplest way is just looping through the array and adding the sizes of the subfolders.
+      foreach($nonRecursiveFolderSizes as $path => $size) {
+        // If the looped path is the current path, we can skip it. We don't want to add the size of the current folder to itself.
+        // If the looped path is not a subfolder of the current path, we can skip it as well.
+        if ($path !== $key && str_starts_with($path, $key)) {
+          $folderSize += $size;
+        }
+      }
+
+      return $folderSize;
+    })
+    ->toArray();
+}
+```
+
+Now we can get the sum of all folders with a maximum size of 100.000.
+
+```php
+$result1 = collect($folderSizes)
+  ->filter(fn($size) => $size < 100000)
+  ->sum();
+```
+
+## Part 2
+
+We need to free up enough diskspace, but remove as little as possible.
+So we need to calculate the desired extra free diskspace and then find the folder with the smallest size that is larger than the desired extra free diskspace.
+
+```php
+$totalDiskSpace = 70000000;
+$intendedFreeSpace = 30000000;
+$usedDiskSpace = $folderSizes['/'];
+$spaceNeeded = ($totalDiskSpace - $usedDiskSpace - $intendedFreeSpace) * -1;
+
+$result2 = collect($folderSizes)
+  ->sort()
+  ->first(function($size) use ($spaceNeeded) {
+    return $size >= $spaceNeeded;
+  });
+```
+
+Easy does it :)
+
+## Conclusion
+Another fun challenge. I really like that the challenges are getting more complex. I’m looking forward to the next one!
+I hope you enjoyed this article. If you have any questions or remarks, feel free to reach out on Twitter @falko100.
