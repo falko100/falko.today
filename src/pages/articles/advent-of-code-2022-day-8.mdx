@@ -1,0 +1,211 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+export const meta = {
+  author: 'Falko Woudstra',
+  date: '2022-12-08',
+  title: 'Advent of Code - Day 8',
+  description:
+    'No time for an article today, so you get a code snippet instead.',
+}
+
+export default (props) => <ArticleLayout meta={meta} {...props} />
+
+## Introduction
+
+Day 8, I slept in a bit, so I didn't have time to write an article. I'll do that later.
+
+## Spoilers ahead of the challenges of Day 8
+
+If you plan on doing the challenges, I would advise you to not read any further. The solutions are posted below, and I will explain how I solved them.
+After doing the challenges, you can come back and read this article to see how I solved them.
+
+## Code snippet
+
+I will post the code snippet for the challenges of Day 8. I will explain how I solved them later.
+
+> "Time is an illusion. Santa is a time traveler. He's been to the future, and he knows how it ends. He's trying to prevent it from happening. That's why he's bringing you presents."
+> <br /> — Artificial Intelligence Santa
+
+```php
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
+
+class TreeGridSolver extends Command
+{
+  protected $signature = 'day:8-1';
+
+  protected $description = 'Tree Grid Solver';
+
+  private int $gridWidth = 0;
+
+  private int $gridHeight = 0;
+
+  /** @var array<int, array<int, int> $grid */
+  private array $grid = [];
+
+  public function handle()
+  {
+    $this->grid = collect(explode("\n", Storage::get('input-8.txt')))
+      ->filter()
+      ->map(function ($row) {
+        $treesInRow = str_split($row);
+
+        if ($this->gridWidth < count($treesInRow)) {
+          $this->gridWidth = count($treesInRow);
+        }
+
+        return collect($treesInRow)->map(fn($tree) => (int)$tree)->toArray();
+      });
+
+    $this->gridHeight = $this->grid->count();
+
+    $visibilityGrid = [];
+    for ($x = 0; $x < $this->gridWidth; $x++) {
+      for ($y = 0; $y < $this->gridHeight; $y++) {
+        $visibilityGrid[$y][$x] = $this->getVisibility($x, $y);
+      }
+    }
+
+    $totalVisibleTrees = collect($visibilityGrid)->sum(fn($row) => collect($row)->sum());
+    $this->line('The total amount of visible trees is: ' . $totalVisibleTrees);
+
+    $scenicScoreGrid = [];
+    for ($x = 0; $x < $this->gridWidth; $x++) {
+      for ($y = 0; $y < $this->gridHeight; $y++) {
+        $scenicScoreGrid[$y . '-' . $x] = $this->getScenicScore($x, $y);
+      }
+    }
+
+    $this->line('The highest scenic score is: ' . collect($scenicScoreGrid)->max());
+  }
+
+  private function getVisibility(int $x, int $y): int
+  {
+    if ($x === 0 || $y === 0 || $x === $this->gridWidth - 1 || $y === $this->gridHeight - 1) {
+      return 1;
+    }
+
+    $highestTreeToTheNorth = $this->getHighestTreeInDirection('north', $x, $y);
+    $highestTreeToTheSouth = $this->getHighestTreeInDirection('south', $x, $y);
+    $highestTreeToTheWest = $this->getHighestTreeInDirection('west', $x, $y);
+    $highestTreeToTheEast = $this->getHighestTreeInDirection('east', $x, $y);
+
+    $treeHeight = $this->grid[$y][$x];
+
+    if (
+      $treeHeight > $highestTreeToTheNorth ||
+      $treeHeight > $highestTreeToTheSouth ||
+      $treeHeight > $highestTreeToTheWest ||
+      $treeHeight > $highestTreeToTheEast
+    ) {
+      return 1;
+    }
+
+    return 0;
+  }
+
+  private function getHighestTreeInDirection(string $direction, int $x, int $y): int
+  {
+    switch ($direction) {
+      case 'north':
+        return $this->findHighestTree([$x], range(0, $y - 1));
+      case 'south':
+        return $this->findHighestTree([$x], range($y + 1, $this->gridHeight - 1));
+      case 'west':
+        return $this->findHighestTree(range(0, $x - 1), [$y]);
+      case 'east':
+        return $this->findHighestTree(range($x + 1, $this->gridWidth - 1), [$y]);
+    }
+  }
+
+  private function findHighestTree(array $xRange, array $yRange)
+  {
+    $highestTree = 0;
+
+    foreach ($xRange as $x) {
+      foreach ($yRange as $y) {
+        if ($this->grid[$y][$x] > $highestTree) {
+          $highestTree = $this->grid[$y][$x];
+        }
+      }
+    }
+
+    return $highestTree;
+  }
+
+  private function getScenicScore(int $x, int $y)
+  {
+    $northScore = $this->getScenicScoreInDirection('north', $x, $y);
+    $southScore = $this->getScenicScoreInDirection('south', $x, $y);
+    $westScore = $this->getScenicScoreInDirection('west', $x, $y);
+    $eastScore = $this->getScenicScoreInDirection('east', $x, $y);
+
+    return $northScore * $southScore * $westScore * $eastScore;
+  }
+
+  private function getScenicScoreInDirection(string $direction, int $x, int $y)
+  {
+    switch ($direction) {
+      case 'north':
+        if ($y === 0) {
+          return 0;
+        }
+
+        $treesToCheck = $this->getTreesInDirection('north', $x, $y);
+        break;
+      case 'south':
+        if ($y === $this->gridHeight - 1) {
+          return 0;
+        }
+
+        $treesToCheck = $this->getTreesInDirection('south', $x, $y);
+        break;
+      case 'west':
+        if ($x === 0) {
+          return 0;
+        }
+
+        $treesToCheck = $this->getTreesInDirection('west', $x, $y);
+        break;
+      case 'east':
+        if ($x === $this->gridWidth - 1) {
+          return 0;
+        }
+
+        $treesToCheck = $this->getTreesInDirection('east', $x, $y);
+        break;
+    }
+
+    $visibleTrees = 0;
+    $currentTreeHeight = $this->grid[$y][$x];
+
+    foreach ($treesToCheck as $tree) {
+      $visibleTrees++;
+
+      if ($tree >= $currentTreeHeight) {
+        break;
+      }
+    }
+
+    return $visibleTrees;
+  }
+
+  private function getTreesInDirection(string $direction, int $x, int $y)
+  {
+    switch ($direction) {
+      case 'north':
+        return collect(range($y - 1, 0))->map(fn($y) => $this->grid[$y][$x])->toArray();
+      case 'south':
+        return collect(range($y + 1, $this->gridHeight - 1))->map(fn($y) => $this->grid[$y][$x])->toArray();
+      case 'west':
+        return collect(range($x - 1, 0))->map(fn($x) => $this->grid[$y][$x])->toArray();
+      case 'east':
+        return collect(range($x + 1, $this->gridWidth - 1))->map(fn($x) => $this->grid[$y][$x])->toArray();
+    }
+  }
+}
+```
