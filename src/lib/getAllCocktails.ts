@@ -73,35 +73,39 @@ const cocktailCache: { [key: string]: { drinks?: Drink[] } } = {};
 export async function getAllCocktailsByLetter(
   letter: string
 ): Promise<{ drinks?: Drink[] }> {
-  if (cocktailCache[letter]) {
-    return cocktailCache[letter];
-  }
+  return { drinks: [] };
 
-  const drinks = await fetch(
-    'https://www.thecocktaildb.com/api/json/v2/' +
-      process.env.COCKTAIL_DB_APIKEY +
-      '/search.php?f=' +
-      letter
-  ).then((res) => res.json());
-
-  cocktailCache[letter] = drinks;
-
-  return drinks;
+  // if (cocktailCache[letter]) {
+  //   return cocktailCache[letter];
+  // }
+  //
+  // const drinks = await fetch(
+  //   'https://www.thecocktaildb.com/api/json/v2/' +
+  //     process.env.COCKTAIL_DB_APIKEY +
+  //     '/search.php?f=' +
+  //     letter
+  // ).then((res) => res.json());
+  //
+  // cocktailCache[letter] = drinks;
+  //
+  // return drinks;
 }
 
 export async function getAllCocktails(): Promise<Drink[]> {
-  let result: Drink[] = [];
-  const letters = 'abcdefghijlkmnopqrstuvwxyz1234567890'.split('');
-  for (let i = 0; i < letters.length; i++) {
-    const letter = letters[i];
-    const { drinks } = await getAllCocktailsByLetter(letter);
+  return [];
 
-    if (!drinks) {
-      continue;
-    }
-
-    result = result.concat(drinks);
-  }
-
-  return result.sort((a, b) => a.strDrink.localeCompare(b.strDrink));
+  // let result: Drink[] = [];
+  // const letters = 'abcdefghijlkmnopqrstuvwxyz1234567890'.split('');
+  // for (let i = 0; i < letters.length; i++) {
+  //   const letter = letters[i];
+  //   const { drinks } = await getAllCocktailsByLetter(letter);
+  //
+  //   if (!drinks) {
+  //     continue;
+  //   }
+  //
+  //   result = result.concat(drinks);
+  // }
+  //
+  // return result.sort((a, b) => a.strDrink.localeCompare(b.strDrink));
 }

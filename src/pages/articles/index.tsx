@@ -51,7 +51,7 @@ export default function ArticlesIndex({
         />
       </Head>
       <SimpleLayout
-        title="Writing on webdevelopment, Dungeons &amp; Dragons and my personal life."
+        title="Writing on webdevelopment, my professional life, my personal life, and D&amp;D."
         intro="I love giving you an insight into my life. Which consist mostly of working and spending time with my friends and family, and the occasional dungeon crawl."
       >
         <div className="md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
