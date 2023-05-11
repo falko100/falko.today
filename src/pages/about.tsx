@@ -1,4 +1,4 @@
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Head from 'next/head';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -66,12 +66,12 @@ export default function About() {
                 src={portraitImage}
                 alt=""
                 sizes="(min-width: 1024px) 32rem, 20rem"
-                className="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+                className="aspect-square rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
               />
             </div>
           </div>
           <div className="lg:order-first lg:row-span-2">
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+            <h1 className="text-4xl font-mono font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-3xl">
               My mission is making the internet a little bit more awesome, one
               site at a time.
             </h1>

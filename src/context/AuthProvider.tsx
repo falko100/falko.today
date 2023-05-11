@@ -1,56 +1,31 @@
-import nookies from 'nookies';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { firebaseAuth, firebaseClient } from '@/lib/firebaseClient';
-import type { User } from '@firebase/auth';
-import { getAuth, signInWithRedirect } from 'firebase/auth';
-import { GoogleAuthProvider } from '@firebase/auth';
+import useSWR from 'swr';
 
-const AuthContext = createContext<{ user: User | null }>({
-  user: null,
-});
+export const login = async () => {
+  const {redirect} = await fetch(
+    'http://falko-backend.test/api/auth/google'
+  ).then((res) => res.json());
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    return firebaseAuth.onIdTokenChanged(async (user) => {
-      if (user === null) {
-        setUser(null);
-        nookies.destroy(undefined, 'token', { path: '/' });
-        return;
-      }
-
-      const token = await user.getIdToken();
-      setUser(user);
-      nookies.set(undefined, 'token', token, { path: '/' });
-    });
-  }, []);
-
-  useEffect(() => {
-    const handle = setInterval(async () => {
-      const user = firebaseAuth.currentUser;
-      if (user !== null) {
-        await user.getIdToken(true);
-      }
-    }, 10 * 60000); // Every 10 minutes
-
-    return () => clearInterval(handle);
-  }, []);
-
-  return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
-  );
-}
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-export const login = () => {
-  const provider = new GoogleAuthProvider();
-  signInWithRedirect(firebaseAuth, provider);
+  window.location.href = redirect;
 };
 
 export const logout = () => {
-  firebaseAuth.signOut();
+  localStorage.removeItem('authToken');
+};
+
+export const useUser = () => {
+  const {data, error} = useSWR(
+    'http://falko-backend.test/api/user',
+    (...args) =>
+      fetch(...args, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
+      }).then((res) => res.json())
+  );
+
+  return {
+    user: data,
+    isLoading: !error && !data,
+    isError: error,
+  };
 };

@@ -7,7 +7,7 @@ import {
 } from '@/lib/getAllCocktails';
 import slugify from '@/lib/slugify';
 import Toggle from '@/components/inputs/Toggle';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import useLocalStorageState from 'use-local-storage-state';
 
 type ShortDrink = {

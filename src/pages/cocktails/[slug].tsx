@@ -8,7 +8,7 @@ import {
 } from '@/lib/getAllCocktails';
 import slugify from '@/lib/slugify';
 import { Container } from '@/components/Container';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeftIcon } from '@/components/ArticleLayout';
 

@@ -1,4 +1,4 @@
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Popover, Transition } from '@headlessui/react';
@@ -7,9 +7,7 @@ import clsx from 'clsx';
 import { Container } from '@/components/Container';
 import avatarImage from '@/images/legendary-head.png';
 import { Fragment, useEffect, useRef } from 'react';
-import { login, logout } from '@/context/AuthProvider';
-
-import { useAuth } from '@/context/AuthProvider';
+import { login, logout, useUser } from '@/context/AuthProvider';
 
 function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -121,7 +119,9 @@ function MobileNavItem({
 }
 
 function MobileNavigation(props: { [x: string]: unknown }) {
-  const { user } = useAuth();
+  //const { user } = useAuth();
+  const user = null;
+
   return (
     <Popover {...props}>
       <Popover.Button className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20">
@@ -163,7 +163,7 @@ function MobileNavigation(props: { [x: string]: unknown }) {
             </div>
             <nav className="mt-6">
               <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
-                <MobileNavItem href="/about">About</MobileNavItem>
+                  <MobileNavItem href="/about">About</MobileNavItem>
                 <MobileNavItem href="/articles">Articles</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
                 <MobileNavItem href="/uses">Uses</MobileNavItem>
@@ -221,9 +221,9 @@ function DesktopNavigation(props: { [x: string]: unknown }) {
 }
 
 function AuthButton() {
-  const { user } = useAuth();
+  const { user } = useUser();
 
-  if (user === null) {
+  if (user === undefined) {
     return (
       <button
         type="button"
@@ -247,13 +247,13 @@ function AuthButton() {
         <img
           className="block h-10 w-10 rounded-full object-cover object-center"
           src={user.photoURL}
-          alt={user.displayName || ''}
+          alt={user.name || ''}
           referrerPolicy="no-referrer"
         />
       )}
       {!user.photoURL && (
         <span className="flex h-10 w-10 items-center justify-center rounded-full">
-          {getFirstLettersFromFirstAndLastWord(user.displayName || '?')}
+          {getFirstLettersFromFirstAndLastWord(user.name || '?')}
         </span>
       )}
     </button>

@@ -1,6 +1,6 @@
-import nextMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
-import rehypePrism from '@mapbox/rehype-prism'
+import nextMDX from '@next/mdx';
+import remarkGfm from 'remark-gfm';
+import rehypePrism from '@mapbox/rehype-prism';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,17 +12,23 @@ const nextConfig = {
     scrollRestoration: true,
   },
   images: {
-    domains: ['www.thecocktaildb.com'],
+    domains: ['www.thecocktaildb.com', 'localhost'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'www.thecocktaildb.com',
-        port: "443",
+        port: '443',
         pathname: '/images/media/drink/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8055',
+        pathname: '/assets/**',
       },
     ],
   },
-}
+};
 
 const withMDX = nextMDX({
   extension: /\.mdx?$/,
@@ -32,4 +38,4 @@ const withMDX = nextMDX({
   },
 });
 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);
