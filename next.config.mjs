@@ -12,15 +12,7 @@ const nextConfig = {
     scrollRestoration: true,
   },
   images: {
-    domains: ['www.thecocktaildb.com'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'www.thecocktaildb.com',
-        port: "443",
-        pathname: '/images/media/drink/**',
-      },
-    ],
+    unoptimized: true,
   },
 }
 
