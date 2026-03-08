@@ -1,21 +1,10 @@
 import Head from 'next/head';
 
-import {
-  Drink,
-  getAllCocktails,
-  getAllCocktailsByLetter,
-  getAllIngredientsFromCocktail,
-} from '@/lib/getAllCocktails';
-import slugify from '@/lib/slugify';
+import { getAllCocktails, getCocktailBySlug, Cocktail } from '@/lib/getCocktails';
 import { Container } from '@/components/Container';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { ArrowLeftIcon } from '@/components/ArticleLayout';
-
-export const meta = {
-  title: 'Cocktail',
-  description: 'Dynamic cocktail',
-};
 
 function DetailRow(stat: string, value: string) {
   return (
@@ -32,20 +21,18 @@ function DetailRow(stat: string, value: string) {
   );
 }
 
-export default function Cocktail({
+export default function CocktailPage({
   cocktail,
-  ...props
 }: {
-  cocktail: Drink;
-  [key: string]: any;
+  cocktail: Cocktail;
 }) {
   let details = [
-    { stat: 'Alcholic', value: cocktail.strAlcoholic },
-    { stat: 'Glass', value: cocktail.strGlass },
-    { stat: 'IBA Category', value: cocktail.strIBA },
+    { stat: 'Alcoholic', value: cocktail.isAlcoholic ? 'Alcoholic' : 'Non alcoholic' },
+    { stat: 'Glass', value: cocktail.glass },
+    { stat: 'IBA Category', value: cocktail.IBA || '-' },
     {
-      stat: 'Ingedients',
-      value: getAllIngredientsFromCocktail(cocktail)
+      stat: 'Ingredients',
+      value: cocktail.ingredients
         .map(
           (ingredient) =>
             ingredient.name +
@@ -60,10 +47,10 @@ export default function Cocktail({
   return (
     <>
       <Head>
-        <title>Projects - Falko Woudstra</title>
+        <title>{cocktail.name} - Falko Woudstra</title>
         <meta
           name="description"
-          content="These are some of the projects I am proud of."
+          content={`${cocktail.name} cocktail recipe`}
         />
       </Head>
       <Container className="mt-8 sm:mt-32">
@@ -74,7 +61,7 @@ export default function Cocktail({
                 <div className="aspect-w-12 aspect-h-7 lg:aspect-none">
                   <Image
                     className="rounded-lg object-cover object-center shadow-lg"
-                    src={cocktail.strDrinkThumb}
+                    src={cocktail.image}
                     width={400}
                     height={400}
                     alt=""
@@ -94,15 +81,15 @@ export default function Cocktail({
                   <span>Back to cocktails</span>
                 </Link>
                 <h2 className="text-lg font-semibold text-teal-600">
-                  {cocktail.strCategory}
+                  {cocktail.category}
                 </h2>
                 <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-                  {cocktail.strDrink}
+                  {cocktail.name}
                 </h1>
               </div>
 
               <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-                {cocktail.strInstructions}
+                {cocktail.instructions}
               </p>
 
               <h3 className="mt-5 text-lg font-medium leading-6 text-zinc-800 dark:text-zinc-100">
@@ -120,9 +107,9 @@ export default function Cocktail({
 }
 
 export async function getStaticPaths() {
-  const drinks = await getAllCocktails();
-  const paths = drinks.map((drink: any) => ({
-    params: { slug: slugify(drink.strDrink) },
+  const cocktails = getAllCocktails();
+  const paths = cocktails.map((cocktail) => ({
+    params: { slug: cocktail.slug },
   }));
 
   return {
@@ -131,15 +118,12 @@ export async function getStaticPaths() {
   };
 }
 
-async function getCocktailFromSlug(slug: string) {
-  const cocktails = await getAllCocktailsByLetter(slug[0]);
-  return cocktails.drinks?.find(
-    (drink: any) => slugify(drink.strDrink) === slug
-  );
-}
-
 export async function getStaticProps({ params }: { params: { slug: string } }) {
-  const cocktail = await getCocktailFromSlug(params.slug);
+  const cocktail = getCocktailBySlug(params.slug);
+
+  if (!cocktail) {
+    return { notFound: true };
+  }
 
   return {
     props: {
