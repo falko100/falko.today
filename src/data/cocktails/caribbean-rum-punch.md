@@ -4,7 +4,7 @@ category: Punch / Party Drink
 IBA: null
 glass: Highball glass
 isAlcoholic: true
-image: /images/cocktails/caribbean-rum-punch.jpg
+image: /images/cocktails/caribbean-rum-punch.svg
 ingredients:
   - name: Dark rum
     measurement: 60 ml

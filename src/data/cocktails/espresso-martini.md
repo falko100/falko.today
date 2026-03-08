@@ -4,7 +4,7 @@ category: Cocktail
 IBA: New Era Drinks
 glass: Cocktail glass
 isAlcoholic: true
-image: /images/cocktails/espresso-martini.jpg
+image: /images/cocktails/espresso-martini.svg
 ingredients:
   - name: Vodka
     measurement: 50 ml
